@@ -38,6 +38,9 @@ public final class UiUtil {
         return switch (p.getEstado()) {
             case "EN_VIVO" -> "En vivo" + (p.getMinuto() == null ? "" : " " + p.getMinuto() + "'");
             case "FINALIZADO" -> "Finalizado";
+            case "APLAZADO" -> "Aplazado";
+            case "SUSPENDIDO" -> "Suspendido";
+            case "CANCELADO" -> "Cancelado";
             default -> "Programado";
         };
     }

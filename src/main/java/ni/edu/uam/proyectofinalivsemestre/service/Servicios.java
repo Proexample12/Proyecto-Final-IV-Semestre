@@ -1,15 +1,17 @@
 package ni.edu.uam.proyectofinalivsemestre.service;
 import ni.edu.uam.proyectofinalivsemestre.service.stub.*;
-// TEMPORAL: reemplazar por la versión del Integrante 1/2
+import ni.edu.uam.proyectofinalivsemestre.service.real.ServiciosReales;
+
+/** Real por defecto; la demo se activa explícitamente para pruebas sin API/BD. */
 public final class Servicios {
-    // Sustituir únicamente estas instancias por los servicios reales de los Integrantes 1 y 2.
-    // Sus consultas, sincronizaciones y transacciones deben completarse en el hilo llamante.
-    private static final PartidoService PARTIDOS = new PartidoServiceDemo();
-    private static final PosicionService POSICIONES = new PosicionServiceDemo();
-    private static final FavoritoService FAVORITOS = new FavoritoServiceDemo();
+    public static final boolean DEMO = Boolean.getBoolean("futbol.demo");
+    private static final ServiciosReales REAL = DEMO ? null : new ServiciosReales();
+    private static final PartidoService PARTIDOS = DEMO ? new PartidoServiceDemo() : REAL;
+    private static final PosicionService POSICIONES = DEMO ? new PosicionServiceDemo() : REAL;
+    private static final FavoritoService FAVORITOS = DEMO ? new FavoritoServiceDemo() : REAL;
     private Servicios() {}
     public static PartidoService partidos() { return PARTIDOS; }
     public static PosicionService posiciones() { return POSICIONES; }
     public static FavoritoService favoritos() { return FAVORITOS; }
+    public static String origen() { return DEMO ? "datos de ejemplo" : "datos guardados en PostgreSQL"; }
 }
-

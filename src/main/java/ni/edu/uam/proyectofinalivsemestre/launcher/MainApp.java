@@ -15,7 +15,10 @@ public final class MainApp extends Application {
         stage.setMinWidth(1100); stage.setMinHeight(680);
         stage.setScene(scene); stage.setWidth(1100); stage.setHeight(680); stage.show();
     }
-    @Override public void stop() { UiUtil.cerrar(); }
+    @Override public void stop() {
+        UiUtil.cerrar();
+        new Thread(ni.edu.uam.proyectofinalivsemestre.config.HibernateUtil::shutdown, "cerrar-hibernate").start();
+    }
     public static void main(String[] args) { launch(args); }
 }
 

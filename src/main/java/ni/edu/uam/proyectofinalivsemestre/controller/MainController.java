@@ -13,7 +13,8 @@ public final class MainController {
     @FXML private Label lblEstadoCache;
     @FXML private StackPane contenido;
     @FXML private void initialize() {
-        lblEstadoCache.setText("Caché local · demostración\nDatos en memoria");
+        lblEstadoCache.setText(ni.edu.uam.proyectofinalivsemestre.service.Servicios.DEMO
+                ? "Caché local · demostración\nDatos en memoria" : "Modo API real\nCaché en PostgreSQL");
         grupoNav.selectedToggleProperty().addListener((o, anterior, actual) -> {
             if (actual == null && anterior != null) anterior.setSelected(true);
         });

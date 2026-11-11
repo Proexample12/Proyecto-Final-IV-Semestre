@@ -1,5 +1,10 @@
 # Interfaz de Fútbol App
 
+**Actualización:** la aplicación ya usa API y PostgreSQL por defecto. Consulta
+[EJECUCION_REAL.md](EJECUCION_REAL.md) para configuración, ejecución y pruebas.
+El resto de este documento describe la entrega inicial de UI con demo y se conserva
+como registro; sus instrucciones de integración pendiente ya fueron implementadas.
+
 Implementación del Integrante 3 en `feature/ui-vistas`. Conserva Maven, Java 21,
 JavaFX 21.0.6 y el módulo/paquete base `ni.edu.uam.proyectofinalivsemestre`.
 

@@ -41,7 +41,7 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="8">
                 <Button fx:id="btnFavorito" text="Agregar a favoritos" onAction="#onAlternarFavorito" styleClass="btn-secundario"/>
-                <Region HBox.hgrow="ALWAYS"/><Label text="Datos de ejemplo" styleClass="nota"/>
+                <Region HBox.hgrow="ALWAYS"/><Label text="Datos guardados" styleClass="nota"/>
             </HBox>
         </VBox>
     </StackPane>

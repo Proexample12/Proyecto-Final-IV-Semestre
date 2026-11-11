@@ -79,7 +79,7 @@ public final class FavoritosController {
             PartidoDetalle d = id == null ? null : Servicios.partidos().detalle(id);
             if (sincronizar && d != null) {
                 try {
-                    Servicios.partidos().sincronizar(d.partido().getLiga().getNombre(), d.partido().getFecha().toLocalDate());
+                    Servicios.partidos().actualizarDetalle(id);
                 } catch (Exception e) { aviso = "No se pudo actualizar. Se muestra el detalle guardado.\n" + e.getMessage(); }
                 d = Servicios.partidos().detalle(id);
             }

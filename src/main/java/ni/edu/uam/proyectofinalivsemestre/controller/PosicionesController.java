@@ -18,7 +18,10 @@ public final class PosicionesController {
     private record Resultado(List<Posicion> filas, String aviso) {}
     @FXML private void initialize() {
         cmbLiga.getItems().setAll("LaLiga", "Premier League", "Champions League"); cmbLiga.setValue("LaLiga");
-        cmbTemporada.getItems().setAll("2026/27", "2025/26"); cmbTemporada.setValue("2026/27");
+        int inicio = Servicios.DEMO ? 2026 : ni.edu.uam.proyectofinalivsemestre.service.real.ServiciosReales.temporada(java.time.LocalDate.now());
+        for (int anio = inicio; anio >= inicio - 2; anio--)
+            cmbTemporada.getItems().add(anio + "/" + String.format("%02d", (anio + 1) % 100));
+        cmbTemporada.getSelectionModel().selectFirst();
         tblPosiciones.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tblPosiciones.setPlaceholder(new Label("No hay posiciones guardadas para esta temporada."));
         columna(colPos, Posicion::getPosicion); columna(colEquipo, x -> x.getEquipo().getNombre());
@@ -41,9 +44,9 @@ public final class PosicionesController {
             if (e.getCode() == javafx.scene.input.KeyCode.ENTER && tblPosiciones.getSelectionModel().getSelectedItem() != null)
                 alternar(tblPosiciones.getSelectionModel().getSelectedItem());
         });
-        cmbLiga.valueProperty().addListener((o,a,n) -> cargar(false));
-        cmbTemporada.valueProperty().addListener((o,a,n) -> cargar(false));
-        cargar(false);
+        cmbLiga.valueProperty().addListener((o,a,n) -> cargar(!Servicios.DEMO));
+        cmbTemporada.valueProperty().addListener((o,a,n) -> cargar(!Servicios.DEMO));
+        cargar(!Servicios.DEMO);
     }
     private void columna(TableColumn<Posicion,Object> columna, Function<Posicion,Object> valor) {
         columna.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(valor.apply(c.getValue())));
@@ -67,7 +70,7 @@ public final class PosicionesController {
             return new Resultado(Servicios.posiciones().tabla(liga, temporada), aviso);
         }, r -> {
             tblPosiciones.getItems().setAll(r.filas()); ocupado(false);
-            lblInfo.setText("Clasificación a Champions League · datos de ejemplo · doble clic en un equipo para marcarlo favorito");
+            lblInfo.setText("Clasificación · " + Servicios.origen() + " · doble clic en un equipo para marcarlo favorito");
             if (r.aviso() != null) UiUtil.aviso(r.aviso());
         }, e -> { ocupado(false); UiUtil.error(e); });
     }

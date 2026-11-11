@@ -27,7 +27,7 @@ public final class PartidosController {
     @FXML private void initialize() {
         cmbLiga.getItems().setAll("Todas", "LaLiga", "Premier League", "Champions League");
         cmbLiga.setValue("Todas");
-        dpFecha.setValue(LocalDate.of(2026, 11, 10));
+        dpFecha.setValue(Servicios.DEMO ? LocalDate.of(2026, 11, 10) : LocalDate.now());
         tblPartidos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tblPartidos.setPlaceholder(new Label("No hay partidos para estos filtros."));
         columna(colHora, x -> x.getFecha().format(DateTimeFormatter.ofPattern("HH:mm")));
@@ -82,7 +82,7 @@ public final class PartidosController {
         });
         cmbLiga.valueProperty().addListener((o,a,n) -> cargar(false));
         dpFecha.valueProperty().addListener((o,a,n) -> cargar(false));
-        cargar(false);
+        cargar(!Servicios.DEMO);
     }
     private void columna(TableColumn<Partido,String> c, Function<Partido,String> valor) {
         c.setCellValueFactory(x -> new ReadOnlyObjectWrapper<>(valor.apply(x.getValue())));
@@ -101,7 +101,9 @@ public final class PartidosController {
             return new Resultado(Servicios.partidos().buscar(liga, fecha), Servicios.favoritos().idsPartidosFavoritos(), aviso);
         }, r -> {
             favoritos = r.favoritos(); tblPartidos.getItems().setAll(r.partidos());
-            lblResumen.setText(r.partidos().size() + " partidos · datos de ejemplo · doble clic en una fila abre el detalle");
+            lblResumen.setText(r.partidos().size() + " partidos · " + Servicios.origen()
+                    + " · doble clic en una fila abre el detalle"
+                    + (r.partidos().isEmpty() ? " · prueba otra fecha" : ""));
             ocupado(false); if (r.aviso() != null) UiUtil.aviso(r.aviso());
         }, e -> { ocupado(false); UiUtil.error(e); });
     }
