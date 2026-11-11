@@ -1,6 +1,8 @@
 module ni.edu.uam.proyectofinalivsemestre {
     requires javafx.controls;
     requires javafx.fxml;
+    opens ni.edu.uam.proyectofinalivsemestre.controller to javafx.fxml;
+    exports ni.edu.uam.proyectofinalivsemestre.launcher;
     requires java.sql;
     requires java.net.http;
     requires com.google.gson;
