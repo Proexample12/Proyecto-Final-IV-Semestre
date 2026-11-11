@@ -263,13 +263,13 @@ Proyecto-Final-IV-Semestre/
 | **Donald Jahdiel** (`JayWFx`) | **Líder de Base de Datos y Persistencia ORM** | Modelado relacional y mapeo JPA de las 8 entidades del dominio. Implementación del `GenericDao` transaccional con Hibernate 6, configuración de `persistence.xml`, creación de consultas complejas HQL con optimización `JOIN FETCH` (anti N+1) y pruebas ejecutivas en `HibernateRunnerTest`. |
 | **Kenneth Zamora** (`Kenneth Zamora`) | **Líder de Interfaz Gráfica (UI/UX) e Integración** | Diseño e implementación de las vistas en JavaFX (FXML y estilos Dark Mode en CSS). Coordinación de controladores MVC, asincronía con hilos secundarios (`UiUtil.async`), lógica de integración en `ServiciosReales`, manejo de errores visuales y suite de pruebas unitarias. |
 | **Rommel** (`Rommel110207`) | **Especialista de Integración API y Lógica** | Implementación del conector HTTP `FootballApiService` contra la API v4 de football-data.org, parsing seguro de estructuras JSON complejas mediante Gson y DTOs, manejo de cuotas de red y modularidad Java en `module-info.java`. |
-| **Mauro Delgado** (`masodel`) | **Arquitectura Base y Control de Calidad (QA)** | Estructuración inicial del repositorio Maven, establecimiento del pipeline de ramas en Git, configuración del entorno base y revisión de estándares de código. |
+
 
 ---
 
 ## 📄 Licencia y Créditos
 
-Este proyecto fue desarrollado con fines educativos para la asignatura de **Programación Orientada a Objetos I (POO I)**.
+Este proyecto fue desarrollado con fines educativos para la asignatura de **Programacion de Aplicaciones de Escritorio (PAE)**.
 
 * **Fuente de Datos:** [football-data.org](https://www.football-data.org/) (RESTful API).
 * **Licencia:** Distribuido bajo la Licencia **MIT**. Consulta el archivo `LICENSE` para más detalles.
