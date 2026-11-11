@@ -6,7 +6,7 @@
 ![JavaFX](https://img.shields.io/badge/JavaFX-21.0.6-2C5E8A?style=for-the-badge&logo=java&logoColor=white)
 ![Hibernate](https://img.shields.io/badge/Hibernate_ORM-6.4.4-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B_%2F_18-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green.style?style=for-the-badge)
+
 
 **Aplicación de escritorio moderna estilo OneFootball / FotMob para seguimiento de fútbol europeo en tiempo real.**
 
@@ -31,17 +31,7 @@ Muchas aplicaciones deportivas web o móviles están sobrecargadas de publicidad
 
 ---
 
-## 📋 Cumplimiento de Rúbrica Académica
 
-| Criterio | Puntos | Implementación en el Proyecto |
-| :--- | :---: | :--- |
-| **1. Modelo de datos y mapeo ORM** | **8 / 8** | **8 entidades persistentes de dominio** (`Competition`, `Team`, `Player`, `Match`, `MatchEvent`, `Standing`, `Lineup`, `Favorite`) mapeadas con anotaciones JPA (`@Entity`, `@Table`, `@ManyToOne(fetch = FetchType.LAZY)`, `@OneToMany`, `@JoinColumn`, `@Id`). Adicionalmente se crearon `ApiSnapshot` y `MatchFavorite` para soporte de caché y favoritos. Unidad de persistencia `football_pu` en `META-INF/persistence.xml`. |
-| **2. Operaciones de persistencia y HQL** | **9 / 9** | Arquitectura DAO completa con **`GenericDao<T, ID>`** (CRUD completo transaccional con `EntityTransaction` y try-with-resources) y DAOs especializados. **2 consultas HQL complejas** sobre entidades relacionadas: <br>• **HQL 1 (`StandingDao`):** `JOIN FETCH` entre `Standing`, `Team` y `Competition` con desempate futbolístico multivariable.<br>• **HQL 2 (`MatchDao`):** `JOIN FETCH` entre `Match`, `Competition`, equipos y eventos eliminando el problema N+1. |
-| **3. Integración con JavaFX** | **7 / 7** | Interfaces modulares en FXML (`partidos.fxml`, `posiciones.fxml`, `favoritos.fxml`, `main.fxml`) con estilos en CSS. Ejecución asíncrona con `UiUtil.async` (`Task<T>`) para evitar bloqueo del hilo de UI, validaciones de entrada, bloqueo temporal de filtros durante carga y fallback automático a caché ante pérdida de conexión o límite de la API. Modo de simulación de fallos con `-Ddemo.fallar=true`. |
-| **4. Colaboración con Git y GitHub** | **6 / 6** | Participación activa de los 4 integrantes evidenciada en ramas de trabajo (`Donald`, `feature/api`, `feature/ui-vistas`), Pull Requests revisados e integrados (#1, #2, #3, #5), historial de commits semánticos (`feat:`, `fix:`, `refactor:`, etc.), `.gitignore` riguroso, plantilla `config.example.properties` y documentación técnica exhaustiva. |
-| **Total** | **30 / 30** | **100% de la calificación objetivo.** |
-
----
 
 ## 🚀 Características Principales
 
