@@ -9,5 +9,9 @@ public interface PartidoService {
     List<Partido> buscar(String liga, LocalDate fecha);
     void sincronizar(String liga, LocalDate fecha) throws Exception;
     PartidoDetalle detalle(Long partidoId);
+    default void actualizarDetalle(Long partidoId) throws Exception {
+        Partido p = detalle(partidoId).partido();
+        sincronizar(p.getLiga().getNombre(), p.getFecha().toLocalDate());
+    }
 }
 
