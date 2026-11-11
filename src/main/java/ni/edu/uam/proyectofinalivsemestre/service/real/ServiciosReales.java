@@ -253,4 +253,3 @@ public final class ServiciosReales implements PartidoService, PosicionService, F
                 .getResultList().stream().map(f -> equipoUi(f.getTeam())).toList());
     }
 }
-

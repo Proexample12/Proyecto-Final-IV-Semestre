@@ -36,4 +36,3 @@ public final class Posicion {
     public Integer getDiferencia() { return diferencia; }
     public Integer getPuntos() { return puntos; }
 }
-

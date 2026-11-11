@@ -33,4 +33,3 @@ public final class Partido {
     public String getEstado() { return estado; }
     public Integer getMinuto() { return minuto; }
 }
-

@@ -23,4 +23,3 @@ public final class PosicionServiceDemo implements PosicionService {
     }
     public void sincronizar(String liga, String temporada) throws Exception { DatosDemo.sincronizar(); }
 }
-

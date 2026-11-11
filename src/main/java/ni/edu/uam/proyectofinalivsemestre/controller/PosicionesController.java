@@ -75,4 +75,3 @@ public final class PosicionesController {
         }, e -> { ocupado(false); UiUtil.error(e); });
     }
 }
-

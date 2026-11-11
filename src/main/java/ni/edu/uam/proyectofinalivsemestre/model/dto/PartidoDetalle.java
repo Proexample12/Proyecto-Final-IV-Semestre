@@ -5,4 +5,3 @@ import java.util.List;
 public record PartidoDetalle(Partido partido, String estadio, List<String> eventos,
         Integer posesionLocal, Integer tirosLocal, Integer tirosVisitante,
         Integer tirosPuertaLocal, Integer tirosPuertaVisitante) {}
-

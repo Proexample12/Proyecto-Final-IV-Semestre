@@ -110,4 +110,3 @@ Documentación del proveedor utilizada:
 [Competiciones y clasificación](https://docs.football-data.org/general/v4/competition.html).
 
 Se trabaja en `feature/ui-vistas`. No se realiza push ni se abre un Pull Request.
-

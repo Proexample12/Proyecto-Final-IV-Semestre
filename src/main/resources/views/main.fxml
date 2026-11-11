@@ -16,4 +16,3 @@
     </left>
     <center><StackPane fx:id="contenido" minWidth="0"/></center>
 </BorderPane>
-

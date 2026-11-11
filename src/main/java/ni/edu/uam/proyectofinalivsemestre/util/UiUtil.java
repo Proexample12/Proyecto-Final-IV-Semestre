@@ -49,4 +49,3 @@ public final class UiUtil {
     }
     public static void cerrar() { EXECUTOR.shutdownNow(); }
 }
-

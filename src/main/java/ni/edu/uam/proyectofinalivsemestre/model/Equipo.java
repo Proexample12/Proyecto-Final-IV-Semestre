@@ -12,4 +12,3 @@ public final class Equipo {
     public Long getId() { return id; }
     public String getNombre() { return nombre; }
 }
-

@@ -23,4 +23,3 @@ public final class PartidoServiceDemo implements PartidoService {
         return new PartidoDetalle(p, "[ESTADIO]", eventos, 54, 12, 9, 5, 3);
     }
 }
-

@@ -12,4 +12,3 @@ public final class FavoritoServiceDemo implements FavoritoService {
     public List<Partido> partidosFavoritos() { return DatosDemo.PARTIDOS.stream().filter(p -> DatosDemo.FAVORITOS_PARTIDOS.contains(p.getId())).toList(); }
     public List<Equipo> equiposFavoritos() { return DatosDemo.EQUIPOS.values().stream().filter(e -> DatosDemo.FAVORITOS_EQUIPOS.contains(e.getId())).toList(); }
 }
-

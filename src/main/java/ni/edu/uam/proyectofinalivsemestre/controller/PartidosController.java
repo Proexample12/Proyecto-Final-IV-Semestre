@@ -108,4 +108,3 @@ public final class PartidosController {
         }, e -> { ocupado(false); UiUtil.error(e); });
     }
 }
-

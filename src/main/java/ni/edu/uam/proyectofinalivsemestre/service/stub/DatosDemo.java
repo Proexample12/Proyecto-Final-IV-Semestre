@@ -38,4 +38,3 @@ public final class DatosDemo {
         if (FALLAR_SINCRONIZACION) throw new java.io.IOException("Fallo de sincronización simulado. Se conservan los datos guardados.");
     }
 }
-

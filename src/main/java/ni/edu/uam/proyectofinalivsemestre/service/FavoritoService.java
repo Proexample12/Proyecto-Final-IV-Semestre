@@ -13,4 +13,3 @@ public interface FavoritoService {
     List<Partido> partidosFavoritos();
     List<Equipo> equiposFavoritos();
 }
-

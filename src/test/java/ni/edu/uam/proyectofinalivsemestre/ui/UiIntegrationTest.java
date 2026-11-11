@@ -147,4 +147,3 @@ class UiIntegrationTest {
         assertTrue(errores.isEmpty(), () -> "Errores del hilo JavaFX: " + errores);
     }
 }
-

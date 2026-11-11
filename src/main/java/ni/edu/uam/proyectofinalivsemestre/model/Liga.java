@@ -9,4 +9,3 @@ public final class Liga {
     }
     public String getNombre() { return nombre; }
 }
-

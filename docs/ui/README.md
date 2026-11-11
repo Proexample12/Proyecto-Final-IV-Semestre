@@ -107,4 +107,3 @@ módulo sin nombre; el arranque normal por Maven utiliza el módulo del proyecto
   `Launcher.java` trasladado desde el paquete raíz a `launcher`.
 
 No se realizó push ni se abrió un Pull Request.
-

@@ -136,4 +136,3 @@ public final class FavoritosController {
                 e -> { ocupado(false); UiUtil.error(e); });
     }
 }
-

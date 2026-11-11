@@ -16,4 +16,3 @@
 <HBox spacing="10" alignment="CENTER_LEFT"><Label fx:id="lblResumen" styleClass="nota" wrapText="true" HBox.hgrow="ALWAYS"/><Region HBox.hgrow="ALWAYS"/><ProgressIndicator fx:id="piCarga" visible="false" managed="false" prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24" accessibleText="Cargando datos"/></HBox>
 <Region VBox.vgrow="ALWAYS"/>
 </VBox>
-

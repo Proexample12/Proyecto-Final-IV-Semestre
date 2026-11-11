@@ -9,4 +9,3 @@ public interface PosicionService {
     List<Posicion> tabla(String liga, String temporada);
     void sincronizar(String liga, String temporada) throws Exception;
 }
-

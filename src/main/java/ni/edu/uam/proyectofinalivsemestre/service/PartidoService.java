@@ -14,4 +14,3 @@ public interface PartidoService {
         sincronizar(p.getLiga().getNombre(), p.getFecha().toLocalDate());
     }
 }
-

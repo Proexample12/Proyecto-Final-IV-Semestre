@@ -40,4 +40,3 @@ public final class MainController {
         if (c != null) c.abrirPartido(id);
     }
 }
-

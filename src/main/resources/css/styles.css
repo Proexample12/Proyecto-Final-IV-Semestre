@@ -68,4 +68,3 @@
 .progress-bar { -fx-pref-height: 8; -fx-max-height: 8; }
 .progress-bar .track { -fx-background-color: #D6E2DC; -fx-background-radius: 4; -fx-background-insets: 0; }
 .progress-bar .bar { -fx-background-color: #17775A; -fx-background-radius: 4; -fx-background-insets: 0; -fx-padding: 4; }
-
