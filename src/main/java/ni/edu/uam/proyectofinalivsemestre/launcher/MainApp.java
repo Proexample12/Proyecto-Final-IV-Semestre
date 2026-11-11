@@ -8,6 +8,7 @@ import ni.edu.uam.proyectofinalivsemestre.util.UiUtil;
 
 public final class MainApp extends Application {
     @Override public void start(Stage stage) throws Exception {
+        java.util.Locale.setDefault(java.util.Locale.forLanguageTag("es"));
         Scene scene = new Scene(FXMLLoader.load(MainApp.class.getResource("/views/main.fxml")), 1100, 680);
         scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
         stage.setTitle("Fútbol App");
