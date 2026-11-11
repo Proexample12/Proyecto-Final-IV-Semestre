@@ -33,12 +33,10 @@
                 </VBox>
                 <VBox spacing="10" HBox.hgrow="ALWAYS" prefWidth="180" minWidth="0">
                     <Label text="Estadísticas" styleClass="subtitulo"/>
-                    <Label text="Posesión" styleClass="nota"/>
-                    <Label fx:id="lblPosesion"/><ProgressBar fx:id="pbPosesion" maxWidth="Infinity" accessibleText="Posesión local"/>
-                    <Label text="Tiros" styleClass="nota"/>
-                    <Label fx:id="lblTiros"/><ProgressBar fx:id="pbTiros" maxWidth="Infinity" accessibleText="Proporción de tiros locales"/>
-                    <Label text="Tiros a puerta" styleClass="nota"/>
-                    <Label fx:id="lblTirosPuerta"/><ProgressBar fx:id="pbTirosPuerta" maxWidth="Infinity" accessibleText="Proporción de tiros a puerta locales"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT"><Label fx:id="lblPosesion" minWidth="32"/><ProgressBar fx:id="pbPosesion" maxWidth="Infinity" accessibleText="Posesión local" HBox.hgrow="ALWAYS"/><Label fx:id="lblPosesionVisitante" minWidth="32"/></HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT"><Label fx:id="lblTiros" minWidth="32"/><ProgressBar fx:id="pbTiros" maxWidth="Infinity" accessibleText="Proporción de tiros locales" HBox.hgrow="ALWAYS"/><Label fx:id="lblTirosVisitante" minWidth="32"/></HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT"><Label fx:id="lblTirosPuerta" minWidth="32"/><ProgressBar fx:id="pbTirosPuerta" maxWidth="Infinity" accessibleText="Proporción de tiros a puerta locales" HBox.hgrow="ALWAYS"/><Label fx:id="lblTirosPuertaVisitante" minWidth="32"/></HBox>
+                    <Label text="Posesión · Tiros · Tiros a puerta" styleClass="nota" wrapText="true"/>
                 </VBox>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="8">

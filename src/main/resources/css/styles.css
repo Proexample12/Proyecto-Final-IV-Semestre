@@ -44,7 +44,7 @@
 }
 .table-view .column-header { -fx-size: 36px; -fx-border-width: 0; }
 .table-view .column-header .label { -fx-alignment: CENTER_LEFT; -fx-padding: 0 10; -fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #4A5B55; }
-.table-row-cell { -fx-cell-size: 48px; -fx-background-color: white; -fx-border-color: transparent transparent #E6EDE9 transparent; -fx-border-width: 0 0 1 4; }
+.table-row-cell { -fx-cell-size: 44px; -fx-background-color: white; -fx-border-color: transparent transparent #E6EDE9 transparent; -fx-border-width: 0 0 1 4; }
 .table-row-cell:empty { -fx-border-color: transparent; }
 .table-row-cell:selected { -fx-background-color: #E3EFE9; -fx-text-background-color: #14221E; }
 .table-cell { -fx-alignment: CENTER_LEFT; -fx-padding: 0 8; -fx-border-width: 0; }

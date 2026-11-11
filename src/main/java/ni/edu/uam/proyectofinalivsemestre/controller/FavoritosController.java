@@ -16,6 +16,7 @@ public final class FavoritosController {
     @FXML private ListView<Object> lstFavoritos;
     @FXML private Label lblSinSeleccion, lblLiga, lblFechaEstadio, lblEstado, lblLocal, lblMarcador, lblVisitante;
     @FXML private Label lblPosesion, lblTiros, lblTirosPuerta;
+    @FXML private Label lblPosesionVisitante, lblTirosVisitante, lblTirosPuertaVisitante;
     @FXML private VBox panelDetalle;
     @FXML private ListView<String> lstEventos;
     @FXML private ProgressBar pbPosesion, pbTiros, pbTirosPuerta;
@@ -110,16 +111,18 @@ public final class FavoritosController {
         lblLocal.setText(p.getLocal().getNombre()); lblVisitante.setText(p.getVisitante().getNombre());
         lblMarcador.setText(UiUtil.marcador(p));
         lstEventos.getItems().setAll(d.eventos() == null ? List.of() : d.eventos());
-        estadistica(pbPosesion, lblPosesion, d.posesionLocal(), d.posesionLocal() == null ? null : 100 - d.posesionLocal(), true);
-        estadistica(pbTiros, lblTiros, d.tirosLocal(), d.tirosVisitante(), false);
-        estadistica(pbTirosPuerta, lblTirosPuerta, d.tirosPuertaLocal(), d.tirosPuertaVisitante(), false);
+        estadistica(pbPosesion, lblPosesion, lblPosesionVisitante, d.posesionLocal(), d.posesionLocal() == null ? null : 100 - d.posesionLocal(), true);
+        estadistica(pbTiros, lblTiros, lblTirosVisitante, d.tirosLocal(), d.tirosVisitante(), false);
+        estadistica(pbTirosPuerta, lblTirosPuerta, lblTirosPuertaVisitante, d.tirosPuertaLocal(), d.tirosPuertaVisitante(), false);
         btnFavorito.setText(marcado ? "Quitar de favoritos" : "Agregar a favoritos");
     }
-    private void estadistica(ProgressBar barra, Label etiqueta, Integer local, Integer visitante, boolean porcentaje) {
-        if (local == null || visitante == null) { barra.setProgress(0); etiqueta.setText("Sin datos"); return; }
+    private void estadistica(ProgressBar barra, Label etiqueta, Label etiquetaVisitante, Integer local, Integer visitante, boolean porcentaje) {
+        if (local == null || visitante == null) {
+            barra.setProgress(0); etiqueta.setText("—"); etiquetaVisitante.setText("—"); return;
+        }
         int total = local + visitante; barra.setProgress(total <= 0 ? 0 : (double) local / total);
         String unidad = porcentaje ? "%" : "";
-        etiqueta.setText(local + unidad + "  —  " + visitante + unidad);
+        etiqueta.setText(local + unidad); etiquetaVisitante.setText(visitante + unidad);
     }
     @FXML private void onAlternarFavorito() {
         if (partidoId == null) return;
