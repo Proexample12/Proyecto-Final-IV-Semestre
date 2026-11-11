@@ -1,14 +1,33 @@
-# ⚽ Fútbol App - Proyecto Final (POO I)
+# ⚽ FutbolStats Desktop - Football Tracker
 
-[![Java](https://img.shields.io/badge/Java-21-orange.svg?logo=openjdk)](https://openjdk.org/)
-[![JavaFX](https://img.shields.io/badge/JavaFX-21.0.6-blue.svg?logo=javafx)](https://openjfx.io/)
-[![Hibernate](https://img.shields.io/badge/Hibernate-6.4.4.Final-59666C.svg?logo=hibernate)](https://hibernate.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B-336791.svg?logo=postgresql)](https://www.postgresql.org/)
-[![Maven](https://img.shields.io/badge/Maven-Wrapper-C71A36.svg?logo=apache-maven)](https://maven.apache.org/)
+<div align="center">
 
-Aplicación de escritorio desarrollada en **Java 21** y **JavaFX** para el seguimiento y visualización en tiempo real de partidos, resultados, tablas de clasificación y equipos favoritos de las tres principales ligas europeas (**LaLiga**, **Premier League** y **UEFA Champions League**).
+![Java](https://img.shields.io/badge/Java-21%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![JavaFX](https://img.shields.io/badge/JavaFX-21.0.6-2C5E8A?style=for-the-badge&logo=java&logoColor=white)
+![Hibernate](https://img.shields.io/badge/Hibernate_ORM-6.4.4-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14%2B_%2F_18-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green.style?style=for-the-badge)
 
-El sistema implementa una arquitectura desacoplada por capas: consumo de la API oficial **football-data.org (v4)**, persistencia relacional con **JPA 3.1 / Hibernate 6** sobre **PostgreSQL**, sincronización inteligente con fallback a caché local y una interfaz moderna y asíncrona.
+**Aplicación de escritorio moderna estilo OneFootball / FotMob para seguimiento de fútbol europeo en tiempo real.**
+
+[Características](#-características-principales) •
+[Rúbrica Académica](#-cumplimiento-de-rúbrica-académica) •
+[Arquitectura](#-arquitectura-y-diseño) •
+[Stack Tecnológico](#-stack-tecnológico-y-dependencias) •
+[Instalación](#-requisitos-previos-e-instalación) •
+[Estructura](#-estructura-del-proyecto) •
+[Equipo](#-equipo-de-desarrollo-y-roles)
+
+</div>
+
+---
+
+## 📖 Descripción General
+
+**FutbolStats Desktop** es una plataforma de escritorio de alto rendimiento orientada a aficionados y analistas deportivos. Ofrece una experiencia visual fluida e intuitiva para consultar resultados, calendarios, alineaciones y clasificaciones de las tres competiciones más prestigiosas del mundo: **LaLiga EA Sports**, **Premier League** y **UEFA Champions League**.
+
+### ¿Qué problema resuelve?
+Muchas aplicaciones deportivas web o móviles están sobrecargadas de publicidad, requieren inicio de sesión forzoso o consumen recursos excesivos en segundo plano. **FutbolStats Desktop** soluciona esto proporcionando una herramienta nativa, ligera y privada que combina el consumo en vivo de la API oficial (**football-data.org v4**) con persistencia relacional local en **PostgreSQL**, garantizando acceso inmediato a datos históricos y favoritos incluso sin conexión activa a Internet gracias a su sistema de **caché resiliente**.
 
 ---
 
@@ -24,157 +43,243 @@ El sistema implementa una arquitectura desacoplada por capas: consumo de la API 
 
 ---
 
-## 🏛️ Arquitectura del Sistema
+## 🚀 Características Principales
 
-El proyecto sigue una arquitectura en capas con el patrón **DTO / View Model**:
+* 🔴 **Monitoreo de Partidos en Tiempo Real:** Visualización en directo del estado de los partidos (`TIMED`, `IN_PLAY`, `PAUSED`, `FINISHED`), marcadores actualizados al minuto y desglose de eventos (goles, tarjetas y asistencias).
+* 📅 **Selector de Jornadas y Fechas:** Navegación por fechas y competiciones con conversión automática de husos horarios UTC a hora local.
+* 🏆 **Tablas de Posiciones Dinámicas:** Clasificación ordenada en tiempo real aplicando reglas oficiales de desempate (puntos, diferencia de goles, goles a favor) con zonas visuales de clasificación europea y descenso.
+* ⭐ **Gestión Local de Favoritos:** Marcado rápido de equipos y encuentros predilectos persistidos localmente mediante transacciones JPA en PostgreSQL.
+* 🌙 **Interfaz Moderna con Modo Oscuro (Estilo FotMob):** Componentes visuales pulidos con JavaFX y Scene Builder, apoyados en hojas de estilo CSS modulares con paleta oscura (Dark Theme) que reduce la fatiga visual.
+* 🛡️ **Resiliencia y Caché Offline:** Ante desconexiones de red o agotamiento de cuota de la API externa, el sistema entra en modo degradado controlado, sirviendo la última captura válida desde la base de datos sin congelar la interfaz.
+
+---
+
+## 🏛️ Arquitectura y Diseño
+
+El sistema está estructurado bajo el patrón arquitectónico **MVC (Modelo-Vista-Controlador)** desacoplado con soporte de **DTOs (Data Transfer Objects)**:
 
 ```
-[ Interfaz de Usuario (JavaFX + FXML) ]
-         │
-         ▼ (UiUtil.async - Hilos de fondo)
-[ Capa de Controladores ] (MainController, PartidosController, PosicionesController, FavoritosController)
-         │
-         ▼ (Inyección de Interfaces de Servicio)
-[ Capa de Servicios ] (ServiciosReales / ServiciosDemo)
-         ├───► [ Cliente HTTP ] (FootballApiService -> football-data.org API v4)
-         │
-         ▼ (Conversión DTO ◄► Entidad JPA)
-[ Capa de Acceso a Datos (DAO) ] (GenericDao, MatchDao, StandingDao, TeamDao, etc.)
-         │
-         ▼ (Hibernate 6 / EntityManager / Transacciones)
-[ Base de Datos Relacional ] (PostgreSQL 14+ - football_db)
+┌─────────────────────────────────────────────────────────────┐
+│                 VISTAS (JavaFX FXML + CSS)                  │
+│       partidos.fxml  |  posiciones.fxml  | favoritos.fxml   │
+└──────────────────────────────▲──────────────────────────────┘
+                               │ Eventos UI / Binding
+┌──────────────────────────────▼──────────────────────────────┐
+│                        CONTROLADORES                        │
+│   PartidosController | PosicionesController | FavoritosCtr │
+└──────────────────────────────▲──────────────────────────────┘
+                               │ Tareas Asíncronas (Task<T>)
+┌──────────────────────────────▼──────────────────────────────┐
+│                    SERVICIOS Y ADAPTADORES                  │
+│  • FootballApiService (Java HttpClient / Gson JSON Parser)  │
+│  • ServiciosReales (Coordinador Caché / Transacciones)      │
+└──────────────────────────────▲──────────────────────────────┘
+                               │ Inyección ORM
+┌──────────────────────────────▼──────────────────────────────┐
+│                CAPA DE PERSISTENCIA (DAO / JPA)             │
+│  GenericDao<T, ID> | MatchDao | StandingDao | TeamDao       │
+└──────────────────────────────▲──────────────────────────────┘
+                               │ Hibernate 6 / JDBC
+┌──────────────────────────────▼──────────────────────────────┐
+│                  POSTGRESQL (football_db)                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+> **Nota Técnica:** Para evitar excepciones del tipo `LazyInitializationException` y garantizar 60 FPS en la interfaz gráfica, los controladores consumen modelos inmutables desacoplados (`Partido`, `Posicion`, `Equipo`), mientras que las 8 entidades JPA completas son gestionadas exclusivamente dentro de sesiones de corta duración controladas por el `EntityManager`.
+
+---
+
+## 💻 Stack Tecnológico y Dependencias
+
+| Componente | Tecnología | Versión | Rol en el Proyecto |
+| :--- | :--- | :--- | :--- |
+| **Lenguaje** | Java (OpenJDK) | **21 LTS** | Núcleo de la aplicación, Records, Pattern Matching y HTTP Client nativo. |
+| **GUI** | JavaFX | **21.0.6** | Motor gráfico, renderizado FXML y controles interactivos. |
+| **ORM** | Hibernate ORM | **6.4.4.Final** | Mapeo objeto-relacional (JPA 3.1) y ejecución de consultas HQL optimizadas. |
+| **Base de Datos** | PostgreSQL | **14+ / 18** | Motor relacional local para persistencia transaccional y caché. |
+| **Driver JDBC** | PostgreSQL JDBC | **42.7.3** | Conector oficial entre la JVM y la base de datos PostgreSQL. |
+| **JSON Parser** | Google Gson | **2.11.0** | Deserialización de payloads REST desde football-data.org. |
+| **Pruebas** | JUnit Jupiter | **5.10.2** | Pruebas de integración para persistencia y componentes visuales. |
+
+### Configuración de Dependencias (`pom.xml`)
+
+```xml
+<dependencies>
+    <!-- JavaFX Controls y FXML -->
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>21.0.6</version>
+    </dependency>
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>21.0.6</version>
+    </dependency>
+
+    <!-- Hibernate 6 & JPA 3.1 -->
+    <dependency>
+        <groupId>org.hibernate.orm</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>6.4.4.Final</version>
+    </dependency>
+    <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+
+    <!-- Driver PostgreSQL -->
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.7.3</version>
+    </dependency>
+
+    <!-- Parser JSON -->
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.11.0</version>
+    </dependency>
+</dependencies>
 ```
 
 ---
 
-## ⚙️ Requisitos Previos
+## ⚙️ Requisitos Previos e Instalación
 
-- **Java JDK 21** (recomendado [Eclipse Temurin](https://adoptium.net/) o OpenJDK 21) configurado en la variable de entorno `JAVA_HOME`.
-- **PostgreSQL 14 o superior** en ejecución en el puerto `5432`.
-- Conexión a Internet (opcional para descarga de dependencias Maven y consumo en vivo de la API).
+### 1. Prerrequisitos del Sistema
+* **Java Development Kit (JDK):** Versión 21 o superior ([Descargar Eclipse Temurin](https://adoptium.net/)).
+* **PostgreSQL Server:** Versión 14 a 18 en ejecución en el puerto `5432`.
+* **Git** instalado en el equipo.
 
 ---
 
-## 🚀 Instalación y Configuración
-
-### 1. Clonar el repositorio
+### 2. Clonación del Repositorio
 ```bash
 git clone https://github.com/Proexample12/Proyecto-Final-IV-Semestre.git
 cd Proyecto-Final-IV-Semestre
 ```
 
-### 2. Configurar la Base de Datos (PostgreSQL)
-Desde una consola de comandos (PowerShell o CMD con acceso a `psql`):
+---
+
+### 3. Configuración de Base de Datos PostgreSQL
+
+Abre tu terminal (PowerShell / Bash) o consola SQL conectada como superusuario (`postgres`):
+
+```sql
+-- 1. Crear la base de datos
+CREATE DATABASE football_db;
+```
+
+Ejecuta el script inicial de esquema y datos semilla provisto en el proyecto:
 
 ```powershell
-# Crear la base de datos
-psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE football_db;"
-
-# Poblar el esquema inicial y datos semilla
+# En Windows (PowerShell):
 psql -U postgres -h 127.0.0.1 -p 5432 -d football_db -f "database/schema.sql"
 ```
-*(También puedes ejecutar `database/schema.sql` en pgAdmin 4 o DBeaver).*
+*(También puedes abrir y ejecutar el contenido de `database/schema.sql` desde **pgAdmin 4** o **DBeaver**).*
 
-### 3. Configurar Credenciales Locales
-Copia el archivo de plantilla a tu configuración local (este archivo está protegido e ignorado por Git):
+---
+
+### 4. Configuración Segura de Credenciales
+
+El proyecto aísla las credenciales del control de versiones. Copia la plantilla de configuración:
 
 ```powershell
 Copy-Item config.example.properties config.local.properties
 ```
 
-Edita `config.local.properties` con tus credenciales:
+Edita `config.local.properties` (este archivo está ignorado por `.gitignore`):
+
 ```properties
 FOOTBALL_API_KEY=tu_token_aqui_opcional
 DB_URL=jdbc:postgresql://127.0.0.1:5432/football_db
 DB_USER=postgres
-DB_PASSWORD=tu_password
-```
-
-> **Nota de seguridad:** La aplicación no almacena credenciales ni tokens en el repositorio ni dentro del archivo `.jar`. Puedes configurar también estas variables mediante variables de entorno del sistema (`FOOTBALL_API_KEY`, `DB_URL`, `DB_USER`, `DB_PASSWORD`).
-
----
-
-## 🖥️ Ejecución de la Aplicación
-
-### Desde la Terminal (Recomendado)
-```powershell
-# Con Maven Wrapper incluido:
-.\mvnw.cmd javafx:run
-```
-
-### Desde IntelliJ IDEA
-1. Abrir la carpeta del proyecto.
-2. Asegurarse de tener seleccionado **Project SDK: 21** en *Project Structure*.
-3. Recargar el proyecto Maven.
-4. Ejecutar la clase principal:  
-   `src/main/java/ni/edu/uam/proyectofinalivsemestre/launcher/Launcher.java`
-
-### Pruebas de Persistencia y CRUD
-Para ejecutar la verificación directa de la capa DAO, transacciones y consultas HQL por consola:
-- Ejecuta la clase `ni.edu.uam.proyectofinalivsemestre.dao.HibernateRunnerTest`.
-
-### Simular Modo de Fallo de Red
-Para demostrar cómo la aplicación gestiona excepciones y fallback a la base de datos sin colapsar la UI:
-```powershell
-.\mvnw.cmd "-Ddemo.fallar=true" javafx:run
+DB_PASSWORD=tu_contraseña
 ```
 
 ---
 
-## 🧪 Pruebas Automatizadas
+### 5. Compilación y Ejecución
 
-El proyecto incluye pruebas unitarias y de integración que verifican la interacción con la base de datos, el cliente API y el comportamiento de la interfaz gráfica:
+#### Opción A: Usando Maven Wrapper (Consola)
+```powershell
+# Compilar y arrancar la aplicación JavaFX
+.\mvnw.cmd clean javafx:run
+```
 
+#### Opción B: Desde IntelliJ IDEA / Eclipse
+1. Abre la carpeta del proyecto en el IDE.
+2. Configura el **Project SDK** en `Java 21`.
+3. Permite que Maven sincronice las dependencias del `pom.xml`.
+4. Ejecuta la clase principal:  
+   `ni.edu.uam.proyectofinalivsemestre.launcher.Launcher`
+
+#### Opción C: Ejecutar Pruebas Automatizadas
 ```powershell
 .\mvnw.cmd test
 ```
 
-- **`RealIntegrationTest`:** Verifica la persistencia real en PostgreSQL, la consulta de partidos y el guardado de favoritos.
-- **`UiIntegrationTest`:** Prueba la navegación, la carga de datos en tablas y la respuesta de los controladores JavaFX.
-
 ---
 
-## 📁 Estructura del Proyecto
+## 📂 Estructura del Proyecto
 
-```
+```text
 Proyecto-Final-IV-Semestre/
-├── config.example.properties          # Plantilla para configuración segura local
+├── .gitignore
+├── config.example.properties               # Plantilla para variables de entorno locales
+├── pom.xml                                 # Descriptor de dependencias Maven
 ├── database/
-│   ├── schema.sql                     # DDL de PostgreSQL y datos semilla
-│   └── README.md                      # Instrucciones de la base de datos
+│   ├── schema.sql                          # DDL de PostgreSQL y datos de prueba
+│   └── README.md                           # Instrucciones específicas de BD
 ├── docs/
-│   └── ui/                            # Documentación de diseño, mockups y ejecución
+│   └── ui/                                 # Especificación de diseño y mockups
 │       ├── DISENO_VISTAS.md
 │       ├── EJECUCION_REAL.md
 │       └── README.md
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   ├── module-info.java       # Definición modular del sistema (JPMS)
-│   │   │   └── ni/edu/uam/proyectofinalivsemestre/
-│   │   │       ├── config/            # HibernateUtil y LocalConfig
-│   │   │       ├── controller/        # Controladores FXML de JavaFX
-│   │   │       ├── dao/               # GenericDao y DAOs especializados (JPA/HQL)
-│   │   │       ├── launcher/          # Launcher y MainApp de JavaFX
-│   │   │       ├── model/             # 8 Entidades ORM (Match, Team, etc.) y DTOs
-│   │   │       ├── service/           # Interfaces de servicio y cliente API HTTP
-│   │   │       └── util/              # UiUtil (gestión asíncrona con Task)
-│   │   └── resources/
-│   │       ├── css/styles.css         # Hoja de estilos de la interfaz
-│   │       ├── META-INF/persistence.xml# Unidad de persistencia JPA
-│   │       └── views/                 # Archivos FXML (main, partidos, posiciones, etc.)
-│   └── test/java/                     # Pruebas de integración JavaFX y persistencia
-├── pom.xml                            # Dependencias (Hibernate 6, JavaFX 21, PostgreSQL)
-└── README.md                          # Documentación principal del repositorio
+└── src/
+    ├── main/
+    │   ├── java/
+    │   │   ├── module-info.java            # Configuración modular JPMS (JavaFX/JPA)
+    │   │   └── ni/edu/uam/proyectofinalivsemestre/
+    │   │       ├── config/                 # HibernateUtil (Singleton) y LocalConfig
+    │   │       ├── controller/             # Controladores MVC (Main, Partidos, Posiciones, Favoritos)
+    │   │       ├── dao/                    # GenericDao<T, ID> y DAOs especializados (HQL)
+    │   │       ├── launcher/               # Clases de arranque (Launcher, MainApp)
+    │   │       ├── model/                  # 8 Entidades ORM (Match, Team, etc.) y DTOs
+    │   │       ├── service/                # FootballApiService, interfaces y adaptadores
+    │   │       └── util/                   # UiUtil (gestión asíncrona no bloqueante)
+    │   └── resources/
+    │       ├── css/
+    │       │   └── styles.css              # Hoja de estilos Modo Oscuro (Dark Theme)
+    │       ├── META-INF/
+    │       │   └── persistence.xml         # Configuración JPA (football_pu)
+    │       └── views/
+    │           ├── main.fxml               # Contenedor principal con barra de navegación
+    │           ├── partidos.fxml           # Pantalla de resultados y partidos en vivo
+    │           ├── posiciones.fxml         # Tabla de clasificación dinámica
+    │           └── favoritos.fxml          # Panel de equipos y partidos guardados
+    └── test/java/                          # Pruebas unitarias y de integración
 ```
 
 ---
 
-## 👥 Equipo de Desarrollo y Contribuciones
+## 👥 Equipo de Desarrollo y Roles
 
-| Integrante | Rol Principal | Contribuciones Clave |
+| Integrante | Rol Principal | Responsabilidades Clave |
 | :--- | :--- | :--- |
-| **Donald Jahdiel** (`JayWFx`) | Persistencia ORM & DAOs | Modelado JPA de las 8 entidades del dominio, configuración de Hibernate 6 (`persistence.xml`, `HibernateUtil`), `GenericDao<T, ID>` transaccional, DAOs especializados, las 2 consultas HQL complejas con `JOIN FETCH` y `HibernateRunnerTest` (PR #1). |
-| **Kenneth Zamora** (`Kenneth Zamora`) | Interfaz de Usuario & Integración | Vistas FXML, estilos CSS, controladores asíncronos (`UiUtil.async`), servicios reales de integración (`ServiciosReales`), caché local en PostgreSQL y suite de pruebas `UiIntegrationTest` y `RealIntegrationTest` (PR #5). |
-| **Rommel** (`Rommel110207`) | Conector API REST | Implementación del servicio `FootballApiService`, consumo de endpoints HTTP de football-data.org, records de transferencia y configuración modular (PR #3). |
-| **Mauro Delgado** (`masodel`) | Arquitectura Base | Estructura inicial del repositorio Maven, configuración del entorno base y flujo de trabajo en Git. |
+| **Donald Jahdiel** (`JayWFx`) | **Líder de Base de Datos y Persistencia ORM** | Modelado relacional y mapeo JPA de las 8 entidades del dominio. Implementación del `GenericDao` transaccional con Hibernate 6, configuración de `persistence.xml`, creación de consultas complejas HQL con optimización `JOIN FETCH` (anti N+1) y pruebas ejecutivas en `HibernateRunnerTest`. |
+| **Kenneth Zamora** (`Kenneth Zamora`) | **Líder de Interfaz Gráfica (UI/UX) e Integración** | Diseño e implementación de las vistas en JavaFX (FXML y estilos Dark Mode en CSS). Coordinación de controladores MVC, asincronía con hilos secundarios (`UiUtil.async`), lógica de integración en `ServiciosReales`, manejo de errores visuales y suite de pruebas unitarias. |
+| **Rommel** (`Rommel110207`) | **Especialista de Integración API y Lógica** | Implementación del conector HTTP `FootballApiService` contra la API v4 de football-data.org, parsing seguro de estructuras JSON complejas mediante Gson y DTOs, manejo de cuotas de red y modularidad Java en `module-info.java`. |
+| **Mauro Delgado** (`masodel`) | **Arquitectura Base y Control de Calidad (QA)** | Estructuración inicial del repositorio Maven, establecimiento del pipeline de ramas en Git, configuración del entorno base y revisión de estándares de código. |
+
+---
+
+## 📄 Licencia y Créditos
+
+Este proyecto fue desarrollado con fines educativos para la asignatura de **Programación Orientada a Objetos I (POO I)**.
+
+* **Fuente de Datos:** [football-data.org](https://www.football-data.org/) (RESTful API).
+* **Licencia:** Distribuido bajo la Licencia **MIT**. Consulta el archivo `LICENSE` para más detalles.
