@@ -4,12 +4,12 @@
 <?import javafx.geometry.Insets?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.FavoritosController" spacing="16" styleClass="contenido">
 <fx:define><ToggleGroup fx:id="grupoTipo"/></fx:define>
-<HBox spacing="10" alignment="CENTER_LEFT"><Label text="Favoritos y detalle" styleClass="titulo"/><Region HBox.hgrow="ALWAYS"/><ProgressIndicator fx:id="piCarga" visible="false" managed="false" prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24" accessibleText="Cargando datos"/><Button fx:id="btnActualizarDetalle" text="Actualizar detalle" onAction="#onActualizarDetalle" styleClass="btn-primario"/></HBox>
+<HBox spacing="10" alignment="CENTER_LEFT"><Label text="Favoritos" styleClass="titulo"/><Region HBox.hgrow="ALWAYS"/><ProgressIndicator fx:id="piCarga" visible="false" managed="false" prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24" accessibleText="Cargando datos"/><Button fx:id="btnActualizarDetalle" text="↻" accessibleText="Actualizar detalle" onAction="#onActualizarDetalle" styleClass="btn-primario"><tooltip><Tooltip text="Actualizar detalle"/></tooltip></Button></HBox>
 <HBox spacing="16" VBox.vgrow="ALWAYS">
-    <VBox prefWidth="290" minWidth="290" maxWidth="290" styleClass="tarjeta">
+    <VBox prefWidth="245" minWidth="210" maxWidth="245" styleClass="tarjeta">
         <HBox spacing="10" styleClass="pestanas">
-            <ToggleButton fx:id="btnTipoPartidos" text="Partidos" selected="true" toggleGroup="$grupoTipo" onAction="#onCambiarTipo" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <ToggleButton fx:id="btnTipoEquipos" text="Equipos" toggleGroup="$grupoTipo" onAction="#onCambiarTipo" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <ToggleButton fx:id="btnTipoPartidos" text="⚽" accessibleText="Partidos" selected="true" toggleGroup="$grupoTipo" onAction="#onCambiarTipo" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <ToggleButton fx:id="btnTipoEquipos" text="⚑" accessibleText="Equipos" toggleGroup="$grupoTipo" onAction="#onCambiarTipo" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
         </HBox>
         <ListView fx:id="lstFavoritos" VBox.vgrow="ALWAYS" accessibleText="Lista de favoritos"/>
     </VBox>
@@ -26,22 +26,49 @@
                 <Label fx:id="lblMarcador" styleClass="marcador" minWidth="-Infinity"/>
                 <Label fx:id="lblVisitante" styleClass="equipo" wrapText="true" minWidth="0" HBox.hgrow="ALWAYS"/>
             </HBox>
-            <HBox spacing="20" VBox.vgrow="ALWAYS" minHeight="140">
-                <VBox spacing="10" HBox.hgrow="ALWAYS" prefWidth="220" minWidth="0">
-                    <Label text="Eventos del partido" styleClass="subtitulo"/>
-                    <ListView fx:id="lstEventos" VBox.vgrow="ALWAYS" styleClass="eventos" accessibleText="Eventos del partido"/>
+            <Label fx:id="lblAvisoDetalle" visible="false" managed="false" wrapText="true" styleClass="aviso-detalle"/>
+            <HBox spacing="12">
+                <VBox spacing="5" HBox.hgrow="ALWAYS" minWidth="0" prefWidth="150">
+                    <Label text="Posesión" styleClass="nota"/>
+                    <HBox spacing="5"><Label fx:id="lblPosesion"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="lblPosesionVisitante"/></HBox>
+                    <ProgressBar fx:id="pbPosesion" maxWidth="Infinity" accessibleText="Posesión"/>
                 </VBox>
-                <VBox spacing="10" HBox.hgrow="ALWAYS" prefWidth="180" minWidth="0">
-                    <Label text="Estadísticas" styleClass="subtitulo"/>
-                    <HBox spacing="10" alignment="CENTER_LEFT"><Label fx:id="lblPosesion" minWidth="32"/><ProgressBar fx:id="pbPosesion" maxWidth="Infinity" accessibleText="Posesión local" HBox.hgrow="ALWAYS"/><Label fx:id="lblPosesionVisitante" minWidth="32"/></HBox>
-                    <HBox spacing="10" alignment="CENTER_LEFT"><Label fx:id="lblTiros" minWidth="32"/><ProgressBar fx:id="pbTiros" maxWidth="Infinity" accessibleText="Proporción de tiros locales" HBox.hgrow="ALWAYS"/><Label fx:id="lblTirosVisitante" minWidth="32"/></HBox>
-                    <HBox spacing="10" alignment="CENTER_LEFT"><Label fx:id="lblTirosPuerta" minWidth="32"/><ProgressBar fx:id="pbTirosPuerta" maxWidth="Infinity" accessibleText="Proporción de tiros a puerta locales" HBox.hgrow="ALWAYS"/><Label fx:id="lblTirosPuertaVisitante" minWidth="32"/></HBox>
-                    <Label text="Posesión · Tiros · Tiros a puerta" styleClass="nota" wrapText="true"/>
+                <VBox spacing="5" HBox.hgrow="ALWAYS" minWidth="0" prefWidth="150">
+                    <Label text="Tiros" styleClass="nota"/>
+                    <HBox spacing="5"><Label fx:id="lblTiros"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="lblTirosVisitante"/></HBox>
+                    <ProgressBar fx:id="pbTiros" maxWidth="Infinity" accessibleText="Tiros"/>
+                </VBox>
+                <VBox spacing="5" HBox.hgrow="ALWAYS" minWidth="0" prefWidth="150">
+                    <Label text="A puerta" styleClass="nota"/>
+                    <HBox spacing="5"><Label fx:id="lblTirosPuerta"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="lblTirosPuertaVisitante"/></HBox>
+                    <ProgressBar fx:id="pbTirosPuerta" maxWidth="Infinity" accessibleText="A puerta"/>
                 </VBox>
             </HBox>
+            <TabPane VBox.vgrow="ALWAYS" minHeight="160" tabClosingPolicy="UNAVAILABLE">
+                <tabs>
+                    <Tab text="⚽"><tooltip><Tooltip text="Eventos"/></tooltip><ListView fx:id="lstEventos" styleClass="eventos" accessibleText="Eventos del partido"/></Tab>
+                    <Tab text="▥"><tooltip><Tooltip text="Estadísticas"/></tooltip>
+                        <TableView fx:id="tblEstadisticas" accessibleText="Todas las estadísticas">
+                            <columns>
+                                <TableColumn fx:id="colDatoLocal" text="Local" prefWidth="75" minWidth="50"/>
+                                <TableColumn fx:id="colDato" text="Estadística" prefWidth="240" minWidth="130"/>
+                                <TableColumn fx:id="colDatoVisitante" text="Visitante" prefWidth="75" minWidth="60"/>
+                            </columns>
+                        </TableView>
+                    </Tab>
+                    <Tab text="⚑"><tooltip><Tooltip text="Alineaciones"/></tooltip>
+                        <VBox spacing="14" alignment="CENTER">
+                            <Label text="Titulares, formación y puntuaciones" styleClass="nota"/>
+                            <Button fx:id="btnAbrirAlineaciones" text="⛶" accessibleText="Abrir alineaciones en una ventana" onAction="#onAbrirAlineaciones" styleClass="btn-campo">
+                                <tooltip><Tooltip text="Ver el campo completo"/></tooltip>
+                            </Button>
+                        </VBox>
+                    </Tab>
+                </tabs>
+            </TabPane>
             <HBox alignment="CENTER_LEFT" spacing="8">
-                <Button fx:id="btnFavorito" text="Agregar a favoritos" onAction="#onAlternarFavorito" styleClass="btn-secundario"/>
-                <Region HBox.hgrow="ALWAYS"/><Label text="Datos guardados" styleClass="nota"/>
+                <Button fx:id="btnFavorito" text="☆" accessibleText="Agregar a favoritos" onAction="#onAlternarFavorito" styleClass="btn-secundario"/>
+                <Region HBox.hgrow="ALWAYS"/><Label fx:id="lblFuente" text="Datos guardados" styleClass="nota" wrapText="true"/>
             </HBox>
         </VBox>
     </StackPane>

@@ -184,7 +184,9 @@ Copy-Item config.example.properties config.local.properties
 Edita `config.local.properties` (este archivo está ignorado por `.gitignore`):
 
 ```properties
-FOOTBALL_API_KEY=tu_token_aqui_opcional
+FOOTBALL_API_KEY=tu_clave_football_data
+API_FOOTBALL_KEY=tu_clave_api_football
+HIGHLIGHTLY_API_KEY=tu_clave_highlightly
 DB_URL=jdbc:postgresql://127.0.0.1:5432/football_db
 DB_USER=postgres
 DB_PASSWORD=tu_contraseña
@@ -273,3 +275,8 @@ Este proyecto fue desarrollado con fines educativos para la asignatura de **Prog
 
 * **Fuente de Datos:** [football-data.org](https://www.football-data.org/) (RESTful API).
 * **Licencia:** Distribuido bajo la Licencia **MIT**. Consulta el archivo `LICENSE` para más detalles.
+
+
+Consulta [las mejoras de UI, pruebas reales y restricciones de API-Football](docs/ui/MEJORAS_IMPLEMENTADAS.md).
+
+El detalle actual usa [Highlightly: configuración, alcance y pruebas](docs/ui/HIGHLIGHTLY.md).

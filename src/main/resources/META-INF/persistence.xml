@@ -52,8 +52,11 @@
             <property name="hibernate.show_sql"              value="true"/>
             <property name="hibernate.format_sql"            value="true"/>
 
-            <!-- Pool de conexiones básico de Hibernate (suficiente para escritorio) -->
-            <property name="hibernate.connection.pool_size"  value="5"/>
+            <!-- Pool HikariCP: conexiones reutilizables con espera acotada -->
+            <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider"/>
+            <property name="hibernate.hikari.maximumPoolSize" value="10"/>
+            <property name="hibernate.hikari.minimumIdle" value="2"/>
+            <property name="hibernate.hikari.connectionTimeout" value="20000"/>
 
             <!-- Zona horaria UTC para evitar desfases con columnas TIMESTAMP -->
             <property name="hibernate.jdbc.time_zone"        value="UTC"/>
