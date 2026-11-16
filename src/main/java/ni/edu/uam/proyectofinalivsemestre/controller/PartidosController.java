@@ -22,27 +22,40 @@ public final class PartidosController {
     @FXML private TableColumn<Partido, Partido> colFavorito;
     private Set<Long> favoritos = Set.of();
     private Consumer<Long> abrirDetalle = id -> {};
+    @FXML private TextField txtBusqueda;
+    private final javafx.collections.ObservableList<Partido> filas = javafx.collections.FXCollections.observableArrayList();
     private record Resultado(List<Partido> partidos, Set<Long> favoritos, String aviso) {}
     public void setAbrirDetalle(Consumer<Long> accion) { abrirDetalle = accion; }
     @FXML private void initialize() {
+        var filtradas = new javafx.collections.transformation.FilteredList<>(filas, p -> true);
+        var ordenadas = new javafx.collections.transformation.SortedList<>(filtradas);
+        ordenadas.comparatorProperty().bind(tblPartidos.comparatorProperty());
+        tblPartidos.setItems(ordenadas);
+        txtBusqueda.textProperty().addListener((o,a,n) -> {
+            String q = UiUtil.normalizar(n);
+            filtradas.setPredicate(p -> UiUtil.normalizar(p.getLocal().getNombre() + " " + p.getVisitante().getNombre()).contains(q));
+        });
         cmbLiga.getItems().setAll("Todas", "LaLiga", "Premier League", "Champions League");
         cmbLiga.setValue("Todas");
         dpFecha.setValue(Servicios.DEMO ? LocalDate.of(2026, 11, 10) : LocalDate.now());
         tblPartidos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tblPartidos.setPlaceholder(new Label("No hay partidos para estos filtros."));
+        tblPartidos.setPlaceholder(UiUtil.vacio("⚽", "Sin partidos", "Cambia la fecha o la búsqueda"));
         columna(colHora, x -> x.getFecha().format(DateTimeFormatter.ofPattern("HH:mm")));
         columna(colLiga, x -> UiUtil.liga(x.getLiga().getNombre()));
         columna(colLocal, x -> x.getLocal().getNombre());
         columna(colMarcador, UiUtil::marcador);
         columna(colVisitante, x -> x.getVisitante().getNombre());
         columna(colEstado, UiUtil::estado);
+        ni.edu.uam.proyectofinalivsemestre.util.Escudos.columna(colLocal, Partido::getLocal);
+        ni.edu.uam.proyectofinalivsemestre.util.Escudos.columna(colVisitante, Partido::getVisitante);
         for (TableColumn<Partido, String> c : List.of(colLiga, colEstado)) {
             c.setCellFactory(column -> new TableCell<>() {
                 @Override protected void updateItem(String valor, boolean vacia) {
                     super.updateItem(valor, vacia); setText(null); setGraphic(null);
                     if (!vacia && valor != null) {
                         Label etiqueta = new Label(valor); etiqueta.getStyleClass().add("etiqueta");
-                        if (valor.startsWith("En vivo")) etiqueta.getStyleClass().add("estado-vivo");
+                        if (valor.startsWith("●")) etiqueta.getStyleClass().add("estado-vivo");
+                        if (valor.startsWith("✓")) etiqueta.getStyleClass().add("estado-finalizado");
                         setGraphic(etiqueta);
                     }
                 }
@@ -58,7 +71,7 @@ public final class PartidosController {
                 UiUtil.async(() -> {
                     Servicios.favoritos().alternarPartido(partido.getId());
                     return Servicios.favoritos().idsPartidosFavoritos();
-                }, ids -> { favoritos = ids; tblPartidos.refresh(); ocupado(false); },
+                }, ids -> { favoritos = ids; tblPartidos.refresh(); UiUtil.favoritosCambiaron(); ocupado(false); },
                 error -> { ocupado(false); UiUtil.error(error); });
             }); }
             @Override protected void updateItem(Partido item, boolean vacia) {
@@ -100,7 +113,7 @@ public final class PartidosController {
             catch (Exception e) { aviso = "No se pudo actualizar. Se muestran los datos guardados.\n" + e.getMessage(); }
             return new Resultado(Servicios.partidos().buscar(liga, fecha), Servicios.favoritos().idsPartidosFavoritos(), aviso);
         }, r -> {
-            favoritos = r.favoritos(); tblPartidos.getItems().setAll(r.partidos());
+            favoritos = r.favoritos(); filas.setAll(r.partidos());
             lblResumen.setText(r.partidos().size() + " partidos · " + Servicios.origen()
                     + " · doble clic en una fila abre el detalle"
                     + (r.partidos().isEmpty() ? " · prueba otra fecha" : ""));

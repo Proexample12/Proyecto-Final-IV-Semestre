@@ -91,4 +91,16 @@ public class MatchDao extends GenericDao<Match, Integer> {
             em.close();
         }
     }
+    /** Paginación SQL sin fetch de colecciones (evita paginación en memoria). */
+    public List<Match> findPage(int competitionId, Integer matchday, int offset, int limit) {
+        if (offset < 0 || limit < 1 || limit > 200) throw new IllegalArgumentException("Página no válida");
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            var q = em.createQuery("select m from Match m join fetch m.competition c "
+                    + "join fetch m.homeTeam join fetch m.awayTeam where c.id = :id "
+                    + (matchday == null ? "" : "and m.matchday = :day ") + "order by m.utcDate, m.id", Match.class)
+                    .setParameter("id", competitionId).setFirstResult(offset).setMaxResults(limit);
+            if (matchday != null) q.setParameter("day", matchday);
+            return q.getResultList();
+        }
+    }
 }

@@ -14,9 +14,19 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnabledIfSystemProperty(named = "futbol.test.real", matches = "true")
 class RealIntegrationTest {
     @Test void sincronizaYConservaCacheEnPostgres() throws Exception {
-        ServiciosReales servicio = new ServiciosReales();
+        var llamadas = new java.util.concurrent.atomic.AtomicInteger();
+        ServiciosReales servicio = new ServiciosReales(new FootballApiService(false) {
+            @Override public String consultarRecurso(String recurso) throws IOException, InterruptedException {
+                llamadas.incrementAndGet(); return super.consultarRecurso(recurso);
+            }
+        }, new ni.edu.uam.proyectofinalivsemestre.service.highlightly.HighlightlyService() {
+            @Override public boolean configurado() { return false; }
+        });
         LocalDate hoy = LocalDate.now();
         servicio.sincronizar(null, hoy);
+        int primeras = llamadas.get();
+        servicio.sincronizar(null, hoy);
+        assertEquals(primeras, llamadas.get(), "TTL: no repetir llamadas de la misma temporada");
         long cantidad;
         Long id;
         LocalDate fecha;
@@ -37,7 +47,16 @@ class RealIntegrationTest {
         String temporada = anio + "/" + String.format("%02d", (anio + 1) % 100);
         servicio.sincronizar("LaLiga", temporada);
         assertFalse(servicio.tabla("LaLiga", temporada).isEmpty());
-        servicio.actualizarDetalle(id);
+        try { servicio.actualizarDetalle(id); }
+        catch (IOException e) {
+            assertTrue(e.getMessage().contains("plan"), "Solo se admite la restricción conocida de temporada");
+            System.out.println("Detalle complementario limitado por el plan; el detalle principal sigue guardado.");
+        }
+        var dao = new ni.edu.uam.proyectofinalivsemestre.dao.MatchDao();
+        var pagina = dao.findPage(2014, null, 0, 5);
+        assertEquals(5, pagina.size());
+        assertNotNull(pagina.getFirst().getHomeTeam().getName());
+        assertNotEquals(pagina.getFirst().getId(), dao.findPage(2014, null, 5, 5).getFirst().getId());
         assertNotNull(servicio.detalle(id));
         ServiciosReales sinRed = new ServiciosReales(new FootballApiService(false) {
             @Override public String consultarRecurso(String recurso) throws IOException {

@@ -1,0 +1,567 @@
+{
+  "id": 1336445224,
+  "date": "2026-11-01T15:15:00.000Z",
+  "league": {
+    "id": 119924,
+    "logo": "https://highlightly.net/soccer/images/leagues/119924.png",
+    "name": "La Liga",
+    "season": 2026
+  },
+  "homeTeam": {
+    "id": 3970699,
+    "name": "Racing Santander"
+  },
+  "awayTeam": {
+    "id": 461175,
+    "name": "Real Madrid"
+  },
+  "venue": {
+    "city": "Santander",
+    "name": "El Sardinero",
+    "country": "Spain",
+    "capacity": "22308"
+  },
+  "events": [
+    {
+      "team": {
+        "id": 461175,
+        "logo": "https://highlightly.net/soccer/images/teams/461175.png",
+        "name": "Real Madrid"
+      },
+      "time": "11",
+      "type": "Penalty",
+      "assist": null,
+      "player": "Kylian Mbappé",
+      "playerId": 44912,
+      "substituted": null,
+      "assistingPlayerId": null
+    },
+    {
+      "team": {
+        "id": 461175,
+        "logo": "https://highlightly.net/soccer/images/teams/461175.png",
+        "name": "Real Madrid"
+      },
+      "time": "21",
+      "type": "Goal",
+      "assist": "Arda Güler",
+      "player": "Jude Bellingham",
+      "playerId": 20884752,
+      "substituted": null,
+      "assistingPlayerId": 47006358
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "29",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Alvaro Mantilla",
+      "playerId": 29251439,
+      "substituted": "Pedro Felipe",
+      "assistingPlayerId": 66825458
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "34",
+      "type": "Yellow Card",
+      "assist": null,
+      "player": "Jeanuël Belocian",
+      "playerId": 55274030,
+      "substituted": null,
+      "assistingPlayerId": null
+    },
+    {
+      "team": {
+        "id": 461175,
+        "logo": "https://highlightly.net/soccer/images/teams/461175.png",
+        "name": "Real Madrid"
+      },
+      "time": "36",
+      "type": "Goal",
+      "assist": null,
+      "player": "Yan Diomande",
+      "playerId": 82718090,
+      "substituted": null,
+      "assistingPlayerId": null
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "45+1",
+      "type": "Yellow Card",
+      "assist": null,
+      "player": "Iker Luque",
+      "playerId": 71037057,
+      "substituted": null,
+      "assistingPlayerId": null
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "60",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Pablo Ramon Parra",
+      "playerId": 7524328,
+      "substituted": "Íñigo Sáinz-Maza",
+      "assistingPlayerId": 29573117
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "61",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Yassir Zabiri",
+      "playerId": 73593415,
+      "substituted": "Pablo García",
+      "assistingPlayerId": 71349397
+    },
+    {
+      "team": {
+        "id": 461175,
+        "logo": "https://highlightly.net/soccer/images/teams/461175.png",
+        "name": "Real Madrid"
+      },
+      "time": "67",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Arda Güler",
+      "playerId": 47006358,
+      "substituted": "Brahim Díaz",
+      "assistingPlayerId": 119938
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "72",
+      "type": "VAR Penalty Cancelled",
+      "assist": null,
+      "player": "Iván Martín",
+      "playerId": 273854,
+      "substituted": null,
+      "assistingPlayerId": null
+    },
+    {
+      "team": {
+        "id": 461175,
+        "logo": "https://highlightly.net/soccer/images/teams/461175.png",
+        "name": "Real Madrid"
+      },
+      "time": "77",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Bernardo Silva",
+      "playerId": 102550,
+      "substituted": "Eduardo Camavinga",
+      "assistingPlayerId": 355481
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "82",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Iñigo Vicente",
+      "playerId": 7614327,
+      "substituted": "Giorgi Guliashvili",
+      "assistingPlayerId": 3955441
+    },
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "time": "82",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Iván Martín",
+      "playerId": 273854,
+      "substituted": "André Almeida",
+      "assistingPlayerId": 6626431
+    },
+    {
+      "team": {
+        "id": 461175,
+        "logo": "https://highlightly.net/soccer/images/teams/461175.png",
+        "name": "Real Madrid"
+      },
+      "time": "85",
+      "type": "Substitution",
+      "assist": null,
+      "player": "Yan Diomande",
+      "playerId": 82718090,
+      "substituted": "Endrick Felipe Moreira de Sousa",
+      "assistingPlayerId": 60716796
+    }
+  ],
+  "statistics": [
+    {
+      "team": {
+        "id": 3970699,
+        "logo": "https://highlightly.net/soccer/images/teams/3970699.png",
+        "name": "Racing Santander"
+      },
+      "statistics": [
+        {
+          "value": 1.15,
+          "displayName": "Expected Goals"
+        },
+        {
+          "value": 0,
+          "displayName": "Big Chances Created"
+        },
+        {
+          "value": 8,
+          "displayName": "Free Kicks"
+        },
+        {
+          "value": 1.04,
+          "displayName": "Expected Assists"
+        },
+        {
+          "value": 4,
+          "displayName": "Successful Crosses"
+        },
+        {
+          "value": 14,
+          "displayName": "Crosses"
+        },
+        {
+          "value": 168,
+          "displayName": "Passes Own Half"
+        },
+        {
+          "value": 303,
+          "displayName": "Passes Opposition Half"
+        },
+        {
+          "value": 11,
+          "displayName": "Successful Long Passes"
+        },
+        {
+          "value": 28,
+          "displayName": "Long Passes"
+        },
+        {
+          "value": 19,
+          "displayName": "Throw-Ins"
+        },
+        {
+          "value": 7,
+          "displayName": "Key Passes"
+        },
+        {
+          "value": 104,
+          "displayName": "Passes Into Final Third"
+        },
+        {
+          "value": 57,
+          "displayName": "Backward Passes"
+        },
+        {
+          "value": 12,
+          "displayName": "Goal Kicks"
+        },
+        {
+          "value": 12,
+          "displayName": "Interceptions"
+        },
+        {
+          "value": 8,
+          "displayName": "Successful Tackles"
+        },
+        {
+          "value": 11,
+          "displayName": "Tackles"
+        },
+        {
+          "value": 26,
+          "displayName": "Clearances"
+        },
+        {
+          "value": 7,
+          "displayName": "Successful Aerial Duels"
+        },
+        {
+          "value": 9,
+          "displayName": "Aerial Duels"
+        },
+        {
+          "value": 5,
+          "displayName": "Successful Dribbles"
+        },
+        {
+          "value": 15,
+          "displayName": "Dribbles"
+        },
+        {
+          "value": 0.1,
+          "displayName": "Shots accuracy"
+        },
+        {
+          "value": 70,
+          "displayName": "Failed passes"
+        },
+        {
+          "value": 0.46,
+          "displayName": "Possession"
+        },
+        {
+          "value": 1,
+          "displayName": "Shots on target"
+        },
+        {
+          "value": 4,
+          "displayName": "Corners"
+        },
+        {
+          "value": 0,
+          "displayName": "Offsides"
+        },
+        {
+          "value": 387,
+          "displayName": "Successful passes"
+        },
+        {
+          "value": 0,
+          "displayName": "Red cards"
+        },
+        {
+          "value": 3,
+          "displayName": "Shots off target"
+        },
+        {
+          "value": 6,
+          "displayName": "Blocked shots"
+        },
+        {
+          "value": 8,
+          "displayName": "Shots within penalty area"
+        },
+        {
+          "value": 457,
+          "displayName": "Total passes"
+        },
+        {
+          "value": 5,
+          "displayName": "Goalkeeper saves"
+        },
+        {
+          "value": 10,
+          "displayName": "Fouls"
+        },
+        {
+          "value": 2,
+          "displayName": "Yellow cards"
+        },
+        {
+          "value": 2,
+          "displayName": "Shots outside penalty area"
+        }
+      ]
+    },
+    {
+      "team": {
+        "id": 461175,
+        "logo": "https://highlightly.net/soccer/images/teams/461175.png",
+        "name": "Real Madrid"
+      },
+      "statistics": [
+        {
+          "value": 3.45,
+          "displayName": "Expected Goals"
+        },
+        {
+          "value": 5,
+          "displayName": "Big Chances Created"
+        },
+        {
+          "value": 9,
+          "displayName": "Free Kicks"
+        },
+        {
+          "value": 1.73,
+          "displayName": "Expected Assists"
+        },
+        {
+          "value": 3,
+          "displayName": "Successful Crosses"
+        },
+        {
+          "value": 14,
+          "displayName": "Crosses"
+        },
+        {
+          "value": 239,
+          "displayName": "Passes Own Half"
+        },
+        {
+          "value": 304,
+          "displayName": "Passes Opposition Half"
+        },
+        {
+          "value": 46,
+          "displayName": "Successful Long Passes"
+        },
+        {
+          "value": 64,
+          "displayName": "Long Passes"
+        },
+        {
+          "value": 19,
+          "displayName": "Throw-Ins"
+        },
+        {
+          "value": 18,
+          "displayName": "Key Passes"
+        },
+        {
+          "value": 136,
+          "displayName": "Passes Into Final Third"
+        },
+        {
+          "value": 97,
+          "displayName": "Backward Passes"
+        },
+        {
+          "value": 5,
+          "displayName": "Goal Kicks"
+        },
+        {
+          "value": 19,
+          "displayName": "Interceptions"
+        },
+        {
+          "value": 10,
+          "displayName": "Successful Tackles"
+        },
+        {
+          "value": 17,
+          "displayName": "Tackles"
+        },
+        {
+          "value": 20,
+          "displayName": "Clearances"
+        },
+        {
+          "value": 2,
+          "displayName": "Successful Aerial Duels"
+        },
+        {
+          "value": 9,
+          "displayName": "Aerial Duels"
+        },
+        {
+          "value": 11,
+          "displayName": "Successful Dribbles"
+        },
+        {
+          "value": 16,
+          "displayName": "Dribbles"
+        },
+        {
+          "value": 0.32,
+          "displayName": "Shots accuracy"
+        },
+        {
+          "value": 58,
+          "displayName": "Failed passes"
+        },
+        {
+          "value": 0.54,
+          "displayName": "Possession"
+        },
+        {
+          "value": 7,
+          "displayName": "Shots on target"
+        },
+        {
+          "value": 6,
+          "displayName": "Corners"
+        },
+        {
+          "value": 2,
+          "displayName": "Offsides"
+        },
+        {
+          "value": 471,
+          "displayName": "Successful passes"
+        },
+        {
+          "value": 0,
+          "displayName": "Red cards"
+        },
+        {
+          "value": 10,
+          "displayName": "Shots off target"
+        },
+        {
+          "value": 5,
+          "displayName": "Blocked shots"
+        },
+        {
+          "value": 16,
+          "displayName": "Shots within penalty area"
+        },
+        {
+          "value": 529,
+          "displayName": "Total passes"
+        },
+        {
+          "value": 1,
+          "displayName": "Goalkeeper saves"
+        },
+        {
+          "value": 8,
+          "displayName": "Fouls"
+        },
+        {
+          "value": 0,
+          "displayName": "Yellow cards"
+        },
+        {
+          "value": 6,
+          "displayName": "Shots outside penalty area"
+        }
+      ]
+    }
+  ],
+  "state": {
+    "clock": 90,
+    "score": {
+      "current": "0 - 3",
+      "penalties": null
+    },
+    "description": "Finished"
+  },
+  "country": {
+    "code": "ES",
+    "name": "Spain",
+    "logo": "https://highlightly.net/soccer/images/countries/ES.svg"
+  }
+}

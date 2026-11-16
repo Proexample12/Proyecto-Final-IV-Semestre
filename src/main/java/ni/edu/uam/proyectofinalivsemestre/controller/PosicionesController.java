@@ -15,21 +15,32 @@ public final class PosicionesController {
     @FXML private Label lblInfo;
     @FXML private TableView<Posicion> tblPosiciones;
     @FXML private TableColumn<Posicion, Object> colPos, colEquipo, colPj, colG, colE, colP, colGf, colGc, colDg, colPts;
+    @FXML private TextField txtBusqueda;
+    private final javafx.collections.ObservableList<Posicion> filas = javafx.collections.FXCollections.observableArrayList();
     private record Resultado(List<Posicion> filas, String aviso) {}
     @FXML private void initialize() {
+        var filtradas = new javafx.collections.transformation.FilteredList<>(filas, p -> true);
+        var ordenadas = new javafx.collections.transformation.SortedList<>(filtradas);
+        ordenadas.comparatorProperty().bind(tblPosiciones.comparatorProperty());
+        tblPosiciones.setItems(ordenadas);
+        txtBusqueda.textProperty().addListener((o,a,n) -> {
+            String q = UiUtil.normalizar(n);
+            filtradas.setPredicate(p -> UiUtil.normalizar(p.getEquipo().getNombre()).contains(q));
+        });
         cmbLiga.getItems().setAll("LaLiga", "Premier League", "Champions League"); cmbLiga.setValue("LaLiga");
         int inicio = Servicios.DEMO ? 2026 : ni.edu.uam.proyectofinalivsemestre.service.real.ServiciosReales.temporada(java.time.LocalDate.now());
         for (int anio = inicio; anio >= inicio - 2; anio--)
             cmbTemporada.getItems().add(anio + "/" + String.format("%02d", (anio + 1) % 100));
         cmbTemporada.getSelectionModel().selectFirst();
         tblPosiciones.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        tblPosiciones.setPlaceholder(new Label("No hay posiciones guardadas para esta temporada."));
+        tblPosiciones.setPlaceholder(UiUtil.vacio("▥", "Sin resultados", "Cambia la búsqueda o actualiza"));
         columna(colPos, Posicion::getPosicion); columna(colEquipo, x -> x.getEquipo().getNombre());
         columna(colPj, Posicion::getPartidosJugados); columna(colG, Posicion::getGanados);
         columna(colE, Posicion::getEmpatados); columna(colP, Posicion::getPerdidos);
         columna(colGf, Posicion::getGolesFavor); columna(colGc, Posicion::getGolesContra);
         columna(colDg, x -> x.getDiferencia() > 0 ? "+" + x.getDiferencia() : x.getDiferencia());
         columna(colPts, Posicion::getPuntos);
+        ni.edu.uam.proyectofinalivsemestre.util.Escudos.columna(colEquipo, Posicion::getEquipo);
         tblPosiciones.setRowFactory(t -> {
             TableRow<Posicion> fila = new TableRow<>() {
                 @Override protected void updateItem(Posicion item, boolean vacia) {
@@ -55,7 +66,7 @@ public final class PosicionesController {
     private void alternar(Posicion posicion) {
         ocupado(true);
         UiUtil.async(() -> Servicios.favoritos().alternarEquipo(posicion.getEquipo().getId()), favorito -> {
-            ocupado(false); lblInfo.setText(posicion.getEquipo().getNombre() + (favorito ? " agregado a favoritos." : " eliminado de favoritos."));
+            UiUtil.favoritosCambiaron(); ocupado(false); lblInfo.setText(posicion.getEquipo().getNombre() + (favorito ? " agregado a favoritos." : " eliminado de favoritos."));
         }, e -> { ocupado(false); UiUtil.error(e); });
     }
     @FXML private void onActualizar() { cargar(true); }
@@ -69,7 +80,7 @@ public final class PosicionesController {
             catch (Exception e) { aviso = "No se pudo actualizar. Se muestran los datos guardados.\n" + e.getMessage(); }
             return new Resultado(Servicios.posiciones().tabla(liga, temporada), aviso);
         }, r -> {
-            tblPosiciones.getItems().setAll(r.filas()); ocupado(false);
+            filas.setAll(r.filas()); ocupado(false);
             lblInfo.setText("Clasificación · " + Servicios.origen() + " · doble clic en un equipo para marcarlo favorito");
             if (r.aviso() != null) UiUtil.aviso(r.aviso());
         }, e -> { ocupado(false); UiUtil.error(e); });

@@ -72,6 +72,21 @@ class UiIntegrationTest {
         assertEquals(6, fx(() -> UiIntegrationTest.<TableView<?>>control("tblPartidos").getItems().size()));
         assertEquals(2, Servicios.favoritos().idsPartidosFavoritos().size());
         fx(() -> {
+            var label = ni.edu.uam.proyectofinalivsemestre.util.Escudos.equipo(new Equipo(999L,"Real Racing Club de Santander"));
+            label.setPrefWidth(145);
+            assertTrue(label.isWrapText());
+            assertEquals("Real Racing Club de Santander",label.getText());
+            return null;
+        });
+        fx(() -> { UiIntegrationTest.<TextField>control("txtBusqueda").setText("  ARSENAL  "); return null; });
+        assertEquals(1, fx(() -> UiIntegrationTest.<TableView<?>>control("tblPartidos").getItems().size()));
+        fx(() -> { UiIntegrationTest.<TextField>control("txtBusqueda").clear(); return null; });
+        double alto = fx(() -> control("tblPartidos").getBoundsInParent().getHeight());
+        fx(() -> { stage.setHeight(900); return null; });
+        esperar(() -> control("tblPartidos").getBoundsInParent().getHeight() > alto + 100);
+        fx(() -> { stage.setHeight(680); return null; });
+
+        fx(() -> {
             UiIntegrationTest.<ComboBox<String>>control("cmbLiga").setValue("LaLiga"); return null;
         });
         listo();
@@ -102,9 +117,18 @@ class UiIntegrationTest {
         listo();
         assertEquals("2 - 1", fx(() -> UiIntegrationTest.<Label>control("lblMarcador").getText()));
         assertEquals(0.54, fx(() -> UiIntegrationTest.<ProgressBar>control("pbPosesion").getProgress()), 0.001);
+        fx(() -> {
+            ((TabPane)root.lookup(".tab-pane")).getSelectionModel().select(2);
+            root.applyCss(); root.layout();
+            UiIntegrationTest.<Button>control("btnAbrirAlineaciones").fire();
+            var popup=Window.getWindows().stream().filter(w->w instanceof Stage st && st.getTitle() != null && st.getTitle().startsWith("Alineaciones ·")).findFirst().orElseThrow();
+            assertNotSame(stage,popup); popup.hide();
+            ((TabPane)root.lookup(".tab-pane")).getSelectionModel().select(0);
+            return null;
+        });
         pulsar("btnFavorito"); listo();
         assertFalse(Servicios.favoritos().idsPartidosFavoritos().contains(2L));
-        assertEquals("Agregar a favoritos", fx(() -> UiIntegrationTest.<Button>control("btnFavorito").getText()));
+        assertEquals("Agregar a favoritos", fx(() -> UiIntegrationTest.<Button>control("btnFavorito").getAccessibleText()));
         pulsar("btnFavorito"); listo();
         assertTrue(Servicios.favoritos().idsPartidosFavoritos().contains(2L));
         DatosDemo.FALLAR_SINCRONIZACION = true;
@@ -123,6 +147,10 @@ class UiIntegrationTest {
         });
         listo();
         assertEquals(2, Servicios.favoritos().equiposFavoritos().size());
+        esperar(() -> UiIntegrationTest.<ToggleButton>control("btnFavoritos").getText().contains("(4)"));
+        fx(() -> { UiIntegrationTest.<TextField>control("txtBusqueda").setText("zz-no-existe"); return null; });
+        assertEquals(0, fx(() -> UiIntegrationTest.<TableView<?>>control("tblPosiciones").getItems().size()));
+        fx(() -> { UiIntegrationTest.<TextField>control("txtBusqueda").clear(); return null; });
         DatosDemo.FALLAR_SINCRONIZACION = true;
         pulsar("btnActualizar"); listo();
         assertEquals(8, fx(() -> UiIntegrationTest.<TableView<?>>control("tblPosiciones").getItems().size()));
@@ -145,5 +173,30 @@ class UiIntegrationTest {
         listo();
         assertTrue(Servicios.favoritos().idsPartidosFavoritos().contains(3L));
         assertTrue(errores.isEmpty(), () -> "Errores del hilo JavaFX: " + errores);
+    }
+
+    @Test void ventanaIndependienteConTodosLosTitulares() throws Exception {
+        var detalle=AlineacionTest.detalle(AlineacionTest.snapshot());
+        fx(()->{
+            Stage alineacion=ni.edu.uam.proyectofinalivsemestre.util.AlineacionWindow.crear(stage,detalle);
+            try {
+                alineacion.show(); Parent panel=alineacion.getScene().getRoot(); panel.applyCss(); panel.layout();
+                assertNotSame(stage,alineacion); assertTrue(alineacion.isShowing());
+                assertEquals(44,panel.lookupAll(".jugador-ficha").size(),"22 titulares y 22 suplentes");
+                assertTrue(panel.lookupAll(".jugador-rating").stream().anyMatch(n->n instanceof Label l && l.getText().equals("7.84")));
+                for(Node n:panel.lookupAll(".jugador-ficha")) assertTrue(n.getBoundsInLocal().getWidth()>60);
+                if(Boolean.getBoolean("futbol.test.capture")) {
+                    var imagen=panel.snapshot(null,null); int w=(int)imagen.getWidth(),h=(int)imagen.getHeight();
+                    var ruta=java.nio.file.Path.of("target","alineacion.ppm");
+                    try(var out=new java.io.BufferedOutputStream(java.nio.file.Files.newOutputStream(ruta))) {
+                        out.write(("P6\n"+w+" "+h+"\n255\n").getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+                        var pixels=imagen.getPixelReader();
+                        for(int y=0;y<h;y++) for(int x=0;x<w;x++) {int rgb=pixels.getArgb(x,y);out.write((rgb>>16)&255);out.write((rgb>>8)&255);out.write(rgb&255);}
+                    }
+                }
+                alineacion.close(); assertTrue(stage.isShowing(),"Cerrar el campo no cierra la aplicación");
+            } finally { alineacion.close(); }
+            return null;
+        });
     }
 }

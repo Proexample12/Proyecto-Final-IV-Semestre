@@ -116,6 +116,7 @@ public class FootballApiService {
     }
 
     /** No sustituye errores por listas vacías ni datos ficticios. */
+    private static final RequestBudget CUOTA = new RequestBudget();
     public String consultarRecurso(String recurso) throws IOException, InterruptedException {
         String token = ni.edu.uam.proyectofinalivsemestre.config.LocalConfig.valor("FOOTBALL_API_KEY", "");
         if (token.isBlank()) throw new IOException("Falta FOOTBALL_API_KEY en la configuración local.");
@@ -124,6 +125,7 @@ public class FootballApiService {
         HttpRequest request = HttpRequest.newBuilder(URI.create(BASE_URL + recurso))
                 .header("X-Auth-Token", token).header("Accept", "application/json")
                 .timeout(Duration.ofSeconds(25)).GET().build();
+        CUOTA.acquire();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200) {
             String motivo = switch (response.statusCode()) {

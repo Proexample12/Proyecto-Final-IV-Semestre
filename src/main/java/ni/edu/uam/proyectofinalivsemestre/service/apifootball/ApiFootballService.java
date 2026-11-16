@@ -50,6 +50,7 @@ public final class ApiFootballService {
     // -------------------------------------------------------------------------
     // Clientes HTTP y JSON
     // -------------------------------------------------------------------------
+    private static final ni.edu.uam.proyectofinalivsemestre.service.RequestBudget CUOTA = new ni.edu.uam.proyectofinalivsemestre.service.RequestBudget();
     private final HttpClient  httpClient;
     private final Gson        gson;
 
@@ -154,7 +155,16 @@ public final class ApiFootballService {
      * @return Cuerpo de la respuesta como String JSON
      * @throws ApiFootballException para todos los casos de error
      */
-    private String get(String recurso) throws ApiFootballException {
+    public synchronized String consultarRecurso(String recurso) throws ApiFootballException {
+        if (!recurso.matches("(?:status|fixtures(?:\\?(?:id=\\d+|league=\\d+&season=\\d{4}(?:&date=\\d{4}-\\d{2}-\\d{2})?))?|fixtures/(?:lineups|events|statistics)\\?fixture=\\d+)"))
+            throw new IllegalArgumentException("Recurso API-Football no permitido");
+        return get(recurso);
+    }
+    private record Cache(String json, java.time.Instant fecha) {}
+    private final java.util.Map<String, Cache> cache = new java.util.HashMap<>();
+    private synchronized String get(String recurso) throws ApiFootballException {
+        Cache anterior = cache.get(recurso);
+        if (anterior != null && java.time.Instant.now().isBefore(anterior.fecha().plusSeconds(90))) return anterior.json();
         String apiKey = cargarApiKey();
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -167,10 +177,14 @@ public final class ApiFootballService {
                 .build();
 
         try {
+            CUOTA.acquire();
             HttpResponse<String> response = httpClient.send(
                     request, HttpResponse.BodyHandlers.ofString()
             );
             validarRespuesta(response);
+            validarContenido(response.body());
+            if (cache.size() >= 256) cache.clear();
+            cache.put(recurso, new Cache(response.body(), java.time.Instant.now()));
             return response.body();
 
         } catch (java.net.http.HttpTimeoutException e) {
@@ -192,6 +206,19 @@ public final class ApiFootballService {
      * Valida el código de estado HTTP de la respuesta.
      * Lanza excepciones descriptivas para los errores más comunes.
      */
+    public static void validarContenido(String body) throws ApiFootballException {
+        try {
+            var json = com.google.gson.JsonParser.parseString(body).getAsJsonObject();
+            var errors = json.get("errors");
+            if (errors != null && !errors.isJsonNull()
+                    && !(errors.isJsonArray() && errors.getAsJsonArray().isEmpty())
+                    && !(errors.isJsonObject() && errors.getAsJsonObject().size() == 0))
+                throw new ApiFootballException(errors.isJsonObject() && errors.getAsJsonObject().has("plan")
+                        ? "Tu plan de API-Football no incluye esta temporada o fecha. El detalle principal sigue disponible."
+                        : "API-Football rechazó la consulta: revisa la clave y la cuota de tu plan.");
+            if (!json.has("response")) throw new ApiFootballException("Respuesta de API-Football incompleta.");
+        } catch (RuntimeException e) { throw new ApiFootballException("Respuesta de API-Football no válida.", e); }
+    }
     private void validarRespuesta(HttpResponse<String> response) throws ApiFootballException {
         switch (response.statusCode()) {
             case 200 -> { /* OK */ }
@@ -209,7 +236,7 @@ public final class ApiFootballService {
             );
             default  -> throw new ApiFootballException(
                     "API-Football respondió con HTTP " + response.statusCode() +
-                    ". Cuerpo: " + response.body()
+                    "."
             );
         }
     }
