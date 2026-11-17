@@ -8,13 +8,18 @@ module ni.edu.uam.proyectofinalivsemestre {
     requires com.google.gson;
     requires org.hibernate.orm.core;
     requires jakarta.persistence;
+    requires java.desktop;
+    requires jasperreports;
 
     opens ni.edu.uam.proyectofinalivsemestre.model to org.hibernate.orm.core, jakarta.persistence, javafx.base, com.google.gson;
     opens ni.edu.uam.proyectofinalivsemestre.config to org.hibernate.orm.core, jakarta.persistence;
     opens ni.edu.uam.proyectofinalivsemestre.service to com.google.gson;
+    opens ni.edu.uam.proyectofinalivsemestre.service.apifootball to com.google.gson;
+
 
     exports ni.edu.uam.proyectofinalivsemestre.model;
     exports ni.edu.uam.proyectofinalivsemestre.dao;
     exports ni.edu.uam.proyectofinalivsemestre.config;
     exports ni.edu.uam.proyectofinalivsemestre.service;
+    exports ni.edu.uam.proyectofinalivsemestre.service.apifootball;
 }

@@ -52,7 +52,6 @@
 .derecha, .table-view .derecha .label { -fx-alignment: CENTER_RIGHT; }
 .fuerte { -fx-font-weight: bold; }
 .etiqueta { -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 3 8; -fx-background-radius: 99; -fx-background-color: #E3EFE9; -fx-text-fill: #0F5A43; }
-.estado-vivo { -fx-background-color: #FDE7E4; -fx-text-fill: #9A2417; }
 .zona-champions { -fx-border-color: transparent transparent #E6EDE9 #2F6FDB; -fx-border-width: 0 0 1 4; }
 .leyenda-champions { -fx-background-color: #2F6FDB; -fx-background-radius: 3; }
 .btn-estrella { -fx-min-width: 44; -fx-min-height: 44; -fx-padding: 0; -fx-font-size: 20px; -fx-text-fill: #17775A; }
@@ -68,3 +67,39 @@
 .progress-bar { -fx-pref-height: 8; -fx-max-height: 8; }
 .progress-bar .track { -fx-background-color: #D6E2DC; -fx-background-radius: 4; -fx-background-insets: 0; }
 .progress-bar .bar { -fx-background-color: #17775A; -fx-background-radius: 4; -fx-background-insets: 0; -fx-padding: 4; }
+
+.vacio-icono { -fx-font-size: 42px; -fx-text-fill: #e8b949; }
+.estado-vivo { -fx-background-color: #a61b32; -fx-text-fill: white; -fx-font-weight: bold; }
+.estado-finalizado { -fx-background-color: #dcebe4; -fx-text-fill: #24533c; }
+
+#txtBusqueda { -fx-min-height: 40; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #C5D2CC; -fx-background-color: white; -fx-padding: 8 12; }
+#btnActualizar, #btnActualizarDetalle, #btnFavorito { -fx-font-size: 22px; -fx-min-width: 44; }
+
+.aviso-detalle { -fx-text-fill: #795500; -fx-background-color: #fff3cd; -fx-padding: 8; -fx-background-radius: 6; -fx-font-size: 12px; }
+.eventos .list-cell { -fx-padding: 10 8; }
+
+/* La altura se calcula con el nombre completo, incluso al estrechar las columnas. */
+#tblPartidos .table-row-cell, #tblPosiciones .table-row-cell { -fx-cell-size: -1; -fx-min-height: 52px; }
+#tblPartidos .table-cell, #tblPosiciones .table-cell { -fx-padding: 6 8; }
+
+.nav { -fx-font-size: 24px; -fx-alignment: CENTER; -fx-padding: 12 4; }
+.btn-campo { -fx-font-size: 42px; -fx-min-width: 88; -fx-min-height: 72; -fx-text-fill: #17775A; }
+.alineacion-ventana { -fx-background-color: #0c211c; }
+.alineacion-ventana .scroll-pane, .alineacion-ventana .scroll-pane > .viewport { -fx-background-color: #0c211c; }
+.alineacion-titulo { -fx-text-fill: #91c6ad; -fx-font-size: 12px; -fx-font-weight: bold; }
+.alineacion-subtitulo { -fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold; }
+.alineacion-boton { -fx-font-size: 22px; -fx-text-fill: white; -fx-background-color: #1b3c31; -fx-border-color: #38604e; }
+.alineacion-equipo { -fx-text-fill: #f2faf6; -fx-font-size: 17px; -fx-font-weight: bold; }
+.alineacion-formacion { -fx-text-fill: #a6d5bb; -fx-font-size: 13px; -fx-font-weight: bold; }
+.alineacion-leyenda { -fx-text-fill: #c8dfd3; -fx-font-size: 12px; -fx-graphic-text-gap: 7; }
+.jugador-ficha { -fx-background-color: #09271ed9; -fx-background-radius: 9; -fx-border-color: #6eaa8540; -fx-border-radius: 9; }
+.jugador-nombre { -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; }
+.jugador-dorsal { -fx-min-width: 26; -fx-min-height: 26; -fx-alignment: CENTER; -fx-background-radius: 20; -fx-font-size: 12px; -fx-font-weight: bold; }
+.dorsal-local { -fx-background-color: #a8e3c1; -fx-text-fill: #102f24; }
+.dorsal-visita { -fx-background-color: #e9eef8; -fx-text-fill: #20344a; }
+.jugador-rating { -fx-background-color: #197c51; -fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 3 6; -fx-background-radius: 5; }
+.rating-ausente { -fx-background-color: #4d6259; }
+.jugador-capitan { -fx-text-fill: #ffdd73; -fx-font-weight: bold; -fx-font-size: 11px; }
+.jugador-insignia, .jugador-insignia .label { -fx-text-fill: white; -fx-font-size: 12px; }
+.cambio-sale { -fx-text-fill: #ff998f; }
+.cambio-entra { -fx-text-fill: #9df3bc; }

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public final class MainController {
     @FXML private ToggleGroup grupoNav;
-    @FXML private ToggleButton btnPartidos, btnPosiciones, btnFavoritos;
+    @FXML private ToggleButton btnPartidos, btnPosiciones, btnFavoritos, btnReportes;
     @FXML private Label lblEstadoCache;
     @FXML private StackPane contenido;
     @FXML private void initialize() {
@@ -18,7 +18,18 @@ public final class MainController {
         grupoNav.selectedToggleProperty().addListener((o, anterior, actual) -> {
             if (actual == null && anterior != null) anterior.setSelected(true);
         });
+        UiUtil.revisionFavoritos.addListener((o,a,n) -> actualizarContador());
+        actualizarContador();
         irAPartidos();
+    }
+    private int revisionContador;
+    private void actualizarContador() {
+        int version = ++revisionContador;
+        UiUtil.async(() -> {
+            var f = ni.edu.uam.proyectofinalivsemestre.service.Servicios.favoritos();
+            return f.idsEquiposFavoritos().size() + f.idsPartidosFavoritos().size();
+        }, total -> { if (version == revisionContador) { btnFavoritos.setText("★ (" + total + ")"); btnFavoritos.setAccessibleText("Favoritos: " + total); btnFavoritos.setTooltip(new Tooltip("Favoritos: " + total)); } },
+           e -> btnFavoritos.setTooltip(new Tooltip("No se pudo leer el contador")));
     }
     private <T> T abrir(String vista, ToggleButton boton) {
         try {
@@ -35,6 +46,7 @@ public final class MainController {
     }
     @FXML private void irAPosiciones() { abrir("posiciones", btnPosiciones); }
     @FXML private void irAFavoritos() { abrir("favoritos", btnFavoritos); }
+    @FXML private void irAReportes() { abrir("reporte_clasificacion", btnReportes); }
     public void abrirDetalle(Long id) {
         FavoritosController c = abrir("favoritos", btnFavoritos);
         if (c != null) c.abrirPartido(id);

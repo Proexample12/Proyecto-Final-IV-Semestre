@@ -19,8 +19,12 @@ public final class FavoritosController {
     @FXML private Label lblPosesionVisitante, lblTirosVisitante, lblTirosPuertaVisitante;
     @FXML private VBox panelDetalle;
     @FXML private ListView<String> lstEventos;
+    @FXML private TableView<PartidoDetalle.Estadistica> tblEstadisticas;
+    @FXML private TableColumn<PartidoDetalle.Estadistica,String> colDato, colDatoLocal, colDatoVisitante;
+    @FXML private Label lblFuente, lblAvisoDetalle;
     @FXML private ProgressBar pbPosesion, pbTiros, pbTirosPuerta;
-    @FXML private Button btnFavorito, btnActualizarDetalle;
+    @FXML private Button btnFavorito, btnActualizarDetalle, btnAbrirAlineaciones;
+    private javafx.stage.Stage ventanaAlineacion;
     @FXML private ProgressIndicator piCarga;
     private Long partidoId;
     private PartidoDetalle detalle;
@@ -29,6 +33,13 @@ public final class FavoritosController {
     private record Resultado(List<?> favoritos, PartidoDetalle detalle, boolean marcado, String aviso) {}
 
     @FXML private void initialize() {
+        configurarTexto(lstEventos);
+        lstEventos.setPlaceholder(new Label("Sin eventos publicados"));
+        tblEstadisticas.setPlaceholder(new Label("Estadísticas aún no disponibles"));
+        colDato.setCellValueFactory(c -> new javafx.beans.property.ReadOnlyStringWrapper(c.getValue().nombre()));
+        colDatoLocal.setCellValueFactory(c -> new javafx.beans.property.ReadOnlyStringWrapper(c.getValue().local()));
+        colDatoVisitante.setCellValueFactory(c -> new javafx.beans.property.ReadOnlyStringWrapper(c.getValue().visitante()));
+        tblEstadisticas.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         grupoTipo.selectedToggleProperty().addListener((o,a,n) -> { if (n == null && a != null) a.setSelected(true); });
         lstFavoritos.setPlaceholder(new Label("Todavía no tienes favoritos."));
         lstFavoritos.setCellFactory(l -> new ListCell<>() {
@@ -53,7 +64,7 @@ public final class FavoritosController {
         cargar(false);
     }
     public void abrirPartido(Long id) {
-        btnTipoPartidos.setSelected(true); partidoId = id; cargar(false);
+        btnTipoPartidos.setSelected(true); partidoId = id; cargar(!Servicios.DEMO);
     }
     @FXML private void onCambiarTipo() {
         partidoId = null; detalle = null; mostrarDetalle(false);
@@ -61,13 +72,28 @@ public final class FavoritosController {
                 : "Doble clic o Supr en un equipo para quitarlo de favoritos");
         cargar(false);
     }
+    private void configurarTexto(ListView<String> lista) {
+        lista.setCellFactory(view -> new ListCell<>() {
+            private final Label texto = new Label();
+            { texto.setWrapText(true); texto.maxWidthProperty().bind(lista.widthProperty().subtract(44)); }
+            @Override protected void updateItem(String item, boolean vacia) {
+                super.updateItem(item,vacia); setText(null); texto.setText(vacia ? "" : item); setGraphic(vacia ? null : texto);
+            }
+        });
+    }
     private void ocupado(boolean valor) {
-        UiUtil.ocupado(valor, piCarga, btnTipoPartidos, btnTipoEquipos, lstFavoritos, btnFavorito, btnActualizarDetalle);
-        if (!valor) btnActualizarDetalle.setDisable(partidoId == null);
+        UiUtil.ocupado(valor, piCarga, btnTipoPartidos, btnTipoEquipos, lstFavoritos, btnFavorito, btnActualizarDetalle, btnAbrirAlineaciones);
+        if (!valor) { btnActualizarDetalle.setDisable(partidoId == null); btnAbrirAlineaciones.setDisable(detalle == null); }
     }
     private void mostrarDetalle(boolean visible) {
         panelDetalle.setVisible(visible); panelDetalle.setManaged(visible);
         lblSinSeleccion.setVisible(!visible); lblSinSeleccion.setManaged(!visible);
+    }
+    @FXML private void onAbrirAlineaciones() {
+        if(detalle == null) return;
+        if(ventanaAlineacion != null) ventanaAlineacion.close();
+        ventanaAlineacion = ni.edu.uam.proyectofinalivsemestre.util.AlineacionWindow.crear(panelDetalle.getScene().getWindow(),detalle);
+        ventanaAlineacion.show();
     }
     @FXML private void onActualizarDetalle() { if (partidoId != null) cargar(true); }
     private void cargar(boolean sincronizar) {
@@ -99,22 +125,29 @@ public final class FavoritosController {
             mostrarDetalle(detalle != null);
             if (detalle != null) pintarDetalle(detalle, r.marcado());
             ocupado(false);
-            if (r.aviso() != null) UiUtil.aviso(r.aviso());
+            String aviso = r.aviso() != null ? r.aviso() : detalle == null ? null : detalle.aviso();
+            lblAvisoDetalle.setText(aviso == null ? "" : aviso);
+            lblAvisoDetalle.setVisible(aviso != null); lblAvisoDetalle.setManaged(aviso != null);
         }, e -> { if (version == solicitud) { ocupado(false); UiUtil.error(e); } });
     }
     private void pintarDetalle(PartidoDetalle d, boolean marcado) {
         Partido p = d.partido();
         lblLiga.setText(UiUtil.liga(p.getLiga().getNombre()));
         lblFechaEstadio.setText(p.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy · HH:mm")) + " · Estadio " + d.estadio());
-        lblEstado.setText(UiUtil.estado(p)); lblEstado.getStyleClass().remove("estado-vivo");
+        lblEstado.setText(UiUtil.estado(p)); lblEstado.getStyleClass().removeAll("estado-vivo", "estado-finalizado");
         if ("EN_VIVO".equals(p.getEstado())) lblEstado.getStyleClass().add("estado-vivo");
+        if ("FINALIZADO".equals(p.getEstado())) lblEstado.getStyleClass().add("estado-finalizado");
         lblLocal.setText(p.getLocal().getNombre()); lblVisitante.setText(p.getVisitante().getNombre());
         lblMarcador.setText(UiUtil.marcador(p));
         lstEventos.getItems().setAll(d.eventos() == null ? List.of() : d.eventos());
-        estadistica(pbPosesion, lblPosesion, lblPosesionVisitante, d.posesionLocal(), d.posesionLocal() == null ? null : 100 - d.posesionLocal(), true);
+        estadistica(pbPosesion, lblPosesion, lblPosesionVisitante, d.posesionLocal(), d.posesionVisitante(), true);
         estadistica(pbTiros, lblTiros, lblTirosVisitante, d.tirosLocal(), d.tirosVisitante(), false);
         estadistica(pbTirosPuerta, lblTirosPuerta, lblTirosPuertaVisitante, d.tirosPuertaLocal(), d.tirosPuertaVisitante(), false);
-        btnFavorito.setText(marcado ? "Quitar de favoritos" : "Agregar a favoritos");
+        tblEstadisticas.getItems().setAll(d.estadisticas());
+        lblFuente.setText(d.fuente() + (d.actualizado() == null ? "" : " · " + d.actualizado().format(DateTimeFormatter.ofPattern("dd/MM HH:mm"))));
+        String accion = marcado ? "Quitar de favoritos" : "Agregar a favoritos";
+        btnFavorito.setText(marcado ? "★" : "☆");
+        btnFavorito.setAccessibleText(accion); btnFavorito.setTooltip(new Tooltip(accion));
     }
     private void estadistica(ProgressBar barra, Label etiqueta, Label etiquetaVisitante, Integer local, Integer visitante, boolean porcentaje) {
         if (local == null || visitante == null) {
@@ -127,12 +160,12 @@ public final class FavoritosController {
     @FXML private void onAlternarFavorito() {
         if (partidoId == null) return;
         Long id = partidoId; ocupado(true);
-        UiUtil.async(() -> Servicios.favoritos().alternarPartido(id), marcado -> cargar(false),
+        UiUtil.async(() -> Servicios.favoritos().alternarPartido(id), marcado -> { UiUtil.favoritosCambiaron(); cargar(false); },
                 e -> { ocupado(false); UiUtil.error(e); });
     }
     private void quitarEquipo(Equipo equipo) {
         ocupado(true);
-        UiUtil.async(() -> Servicios.favoritos().alternarEquipo(equipo.getId()), marcado -> cargar(false),
+        UiUtil.async(() -> Servicios.favoritos().alternarEquipo(equipo.getId()), marcado -> { UiUtil.favoritosCambiaron(); cargar(false); },
                 e -> { ocupado(false); UiUtil.error(e); });
     }
 }

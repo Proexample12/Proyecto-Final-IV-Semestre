@@ -12,6 +12,19 @@ public final class UiUtil {
         Thread t = new Thread(r, "futbol-ui-worker"); t.setDaemon(true); return t;
     });
     private UiUtil() {}
+    public static final javafx.beans.property.IntegerProperty revisionFavoritos = new javafx.beans.property.SimpleIntegerProperty();
+    public static void favoritosCambiaron() { revisionFavoritos.set(revisionFavoritos.get() + 1); }
+    public static String normalizar(String texto) {
+        return java.text.Normalizer.normalize(texto == null ? "" : texto, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "").toLowerCase(java.util.Locale.ROOT).strip();
+    }
+    public static Node vacio(String icono, String titulo, String ayuda) {
+        Label dibujo = new Label(icono); dibujo.getStyleClass().add("vacio-icono");
+        Label nota = new Label(ayuda); nota.setWrapText(true); nota.setMaxWidth(240); nota.getStyleClass().add("nota");
+        var panel = new javafx.scene.layout.VBox(10, dibujo, new Label(titulo), nota);
+        panel.setAlignment(javafx.geometry.Pos.CENTER); return panel;
+    }
+
     public static <T> void async(Callable<T> trabajo, Consumer<T> exito, Consumer<Throwable> error) {
         Task<T> task = new Task<>() { protected T call() throws Exception { return trabajo.call(); } };
         task.setOnSucceeded(e -> exito.accept(task.getValue()));
@@ -29,6 +42,8 @@ public final class UiUtil {
     public static void aviso(String mensaje) { alerta(Alert.AlertType.WARNING, "Datos guardados", mensaje); }
     private static void alerta(Alert.AlertType tipo, String titulo, String mensaje) {
         Alert a = new Alert(tipo, mensaje, ButtonType.OK);
+        Button aceptar = (Button) a.getDialogPane().lookupButton(ButtonType.OK);
+        aceptar.setText("✓"); aceptar.setAccessibleText("Aceptar"); aceptar.setTooltip(new Tooltip("Aceptar"));
         a.setTitle("Fútbol App"); a.setHeaderText(titulo); a.show();
     }
     public static String marcador(Partido p) {
@@ -36,12 +51,17 @@ public final class UiUtil {
     }
     public static String estado(Partido p) {
         return switch (p.getEstado()) {
-            case "EN_VIVO" -> "En vivo" + (p.getMinuto() == null ? "" : " " + p.getMinuto() + "'");
-            case "FINALIZADO" -> "Finalizado";
+            case "EN_VIVO" -> "● EN VIVO" + (p.getMinuto() == null ? "" : " " + p.getMinuto() + "'");
+            case "FINALIZADO" -> "✓ FINALIZADO";
             case "APLAZADO" -> "Aplazado";
             case "SUSPENDIDO" -> "Suspendido";
             case "CANCELADO" -> "Cancelado";
-            default -> "Programado";
+            default -> {
+                var fecha = p.getFecha().toLocalDate(); var hoy = java.time.LocalDate.now();
+                String dia = fecha.equals(hoy) ? "Hoy" : fecha.equals(hoy.plusDays(1)) ? "Mañana"
+                        : fecha.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM"));
+                yield dia + " " + p.getFecha().format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
+            }
         };
     }
     public static String liga(String nombre) {

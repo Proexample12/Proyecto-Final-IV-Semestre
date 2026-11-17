@@ -27,21 +27,19 @@ public abstract class GenericDao<T, ID> {
     /**
      * Inserta una nueva entidad en la base de datos (Persist).
      */
-    public T create(T entity) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            em.persist(entity);
-            tx.commit();
-            return entity;
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            System.err.println("❌ [GenericDao.create] Error al guardar " + entityClass.getSimpleName() + ": " + e.getMessage());
-            throw new RuntimeException(e);
-        } finally {
-            em.close();
+    public static <R> R executeInTransaction(java.util.function.Function<EntityManager, R> action) {
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            EntityTransaction tx = em.getTransaction();
+            try {
+                tx.begin(); R result = action.apply(em); tx.commit(); return result;
+            } catch (RuntimeException | Error e) {
+                try { if (tx.isActive()) tx.rollback(); } catch (RuntimeException rollback) { e.addSuppressed(rollback); }
+                throw e;
+            }
         }
+    }
+    public T create(T entity) {
+        return executeInTransaction(em -> { em.persist(entity); return entity; });
     }
 
     /**
@@ -72,46 +70,17 @@ public abstract class GenericDao<T, ID> {
     /**
      * Actualiza una entidad existente (Merge / Upsert).
      */
-    public T update(T entity) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            T merged = em.merge(entity);
-            tx.commit();
-            return merged;
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            System.err.println("❌ [GenericDao.update] Error al actualizar " + entityClass.getSimpleName() + ": " + e.getMessage());
-            throw new RuntimeException(e);
-        } finally {
-            em.close();
-        }
-    }
+    public T update(T entity) { return executeInTransaction(em -> em.merge(entity)); }
 
     /**
      * Elimina una entidad por su identificador primario.
      */
     public boolean deleteById(ID id) {
-        EntityManager em = HibernateUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
+        return executeInTransaction(em -> {
             T entity = em.find(entityClass, id);
-            if (entity != null) {
-                em.remove(entity);
-                tx.commit();
-                return true;
-            }
-            tx.rollback();
-            return false;
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            System.err.println("❌ [GenericDao.deleteById] Error al eliminar " + entityClass.getSimpleName() + " con id " + id + ": " + e.getMessage());
-            return false;
-        } finally {
-            em.close();
-        }
+            if (entity == null) return false;
+            em.remove(entity); return true;
+        });
     }
 
     /**

@@ -1,0 +1,25 @@
+{
+  "id": 564734,
+  "utcDate": "2026-11-01T15:15:00Z",
+  "competition": {
+    "id": 2014,
+    "name": "Primera Division",
+    "code": "PD",
+    "type": "LEAGUE",
+    "emblem": "https://crests.football-data.org/laliga.png"
+  },
+  "homeTeam": {
+    "id": 5335,
+    "name": "Real Racing Club de Santander",
+    "shortName": "Santander",
+    "tla": "SAN",
+    "crest": "https://crests.football-data.org/5335.png"
+  },
+  "awayTeam": {
+    "id": 86,
+    "name": "Real Madrid CF",
+    "shortName": "Real Madrid",
+    "tla": "RMA",
+    "crest": "https://crests.football-data.org/86.png"
+  }
+}

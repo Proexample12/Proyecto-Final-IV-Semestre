@@ -5,6 +5,7 @@ import ni.edu.uam.proyectofinalivsemestre.config.HibernateUtil;
 import ni.edu.uam.proyectofinalivsemestre.model.Standing;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Data Access Object (DAO) para la entidad Standing implementado con Hibernate 6 / JPA.
@@ -65,6 +66,48 @@ public class StandingDao extends GenericDao<Standing, Integer> {
                     .setParameter("compId", competitionId)
                     .setMaxResults(limit)
                     .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Obtiene el equipo con más goles a favor (mejor ataque) en una competición.
+     */
+    public Optional<Standing> findMejorAtaque(int competitionId) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            String hql = "SELECT s FROM Standing s " +
+                         "JOIN FETCH s.team t " +
+                         "JOIN FETCH s.competition c " +
+                         "WHERE c.id = :compId " +
+                         "ORDER BY s.goalsFor DESC";
+            return em.createQuery(hql, Standing.class)
+                    .setParameter("compId", competitionId)
+                    .setMaxResults(1)
+                    .getResultList()
+                    .stream().findFirst();
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Obtiene el equipo con menos goles en contra (mejor defensa) en una competición.
+     */
+    public Optional<Standing> findMejorDefensa(int competitionId) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            String hql = "SELECT s FROM Standing s " +
+                         "JOIN FETCH s.team t " +
+                         "JOIN FETCH s.competition c " +
+                         "WHERE c.id = :compId AND s.playedGames > 0 " +
+                         "ORDER BY s.goalsAgainst ASC";
+            return em.createQuery(hql, Standing.class)
+                    .setParameter("compId", competitionId)
+                    .setMaxResults(1)
+                    .getResultList()
+                    .stream().findFirst();
         } finally {
             em.close();
         }

@@ -5,11 +5,12 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.MainController">
     <fx:define><ToggleGroup fx:id="grupoNav"/></fx:define>
     <left>
-        <VBox minWidth="200" prefWidth="200" maxWidth="200" spacing="4" styleClass="barra-lateral">
-            <Label text="Fútbol App" styleClass="marca"/>
-            <ToggleButton fx:id="btnPartidos" text="Partidos" toggleGroup="$grupoNav" onAction="#irAPartidos" styleClass="nav" maxWidth="Infinity"/>
-            <ToggleButton fx:id="btnPosiciones" text="Posiciones" toggleGroup="$grupoNav" onAction="#irAPosiciones" styleClass="nav" maxWidth="Infinity"/>
-            <ToggleButton fx:id="btnFavoritos" text="Favoritos" toggleGroup="$grupoNav" onAction="#irAFavoritos" styleClass="nav" maxWidth="Infinity"/>
+        <VBox minWidth="128" prefWidth="128" maxWidth="128" spacing="4" styleClass="barra-lateral">
+            <Label text="Fútbol" styleClass="marca"/>
+            <ToggleButton fx:id="btnPartidos" text="⚽" accessibleText="Partidos" toggleGroup="$grupoNav" onAction="#irAPartidos" styleClass="nav" maxWidth="Infinity"><tooltip><Tooltip text="Partidos"/></tooltip></ToggleButton>
+            <ToggleButton fx:id="btnPosiciones" text="▥" accessibleText="Posiciones" toggleGroup="$grupoNav" onAction="#irAPosiciones" styleClass="nav" maxWidth="Infinity"><tooltip><Tooltip text="Posiciones"/></tooltip></ToggleButton>
+            <ToggleButton fx:id="btnFavoritos" text="★" accessibleText="Favoritos" toggleGroup="$grupoNav" onAction="#irAFavoritos" styleClass="nav" maxWidth="Infinity"><tooltip><Tooltip text="Favoritos"/></tooltip></ToggleButton>
+            <ToggleButton fx:id="btnReportes" text="📊" accessibleText="Reportes" toggleGroup="$grupoNav" onAction="#irAReportes" styleClass="nav" maxWidth="Infinity"><tooltip><Tooltip text="Reportes"/></tooltip></ToggleButton>
             <Region VBox.vgrow="ALWAYS"/>
             <Label fx:id="lblEstadoCache" wrapText="true" styleClass="pie"/>
         </VBox>

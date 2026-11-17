@@ -91,4 +91,37 @@ public class MatchDao extends GenericDao<Match, Integer> {
             em.close();
         }
     }
+    /** Paginación SQL sin fetch de colecciones (evita paginación en memoria). */
+    public List<Match> findPage(int competitionId, Integer matchday, int offset, int limit) {
+        if (offset < 0 || limit < 1 || limit > 200) throw new IllegalArgumentException("Página no válida");
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            var q = em.createQuery("select m from Match m join fetch m.competition c "
+                    + "join fetch m.homeTeam join fetch m.awayTeam where c.id = :id "
+                    + (matchday == null ? "" : "and m.matchday = :day ") + "order by m.utcDate, m.id", Match.class)
+                    .setParameter("id", competitionId).setFirstResult(offset).setMaxResults(limit);
+            if (matchday != null) q.setParameter("day", matchday);
+            return q.getResultList();
+        }
+    }
+
+    /**
+     * Obtiene partidos FINALIZADOS de una competición ordenados por total de goles DESC.
+     * Usada por el Reporte de Análisis de Goles.
+     */
+    public List<Match> findFinishedMatchesByCompetition(int competitionId) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            String hql = "SELECT m FROM Match m " +
+                         "JOIN FETCH m.homeTeam " +
+                         "JOIN FETCH m.awayTeam " +
+                         "JOIN FETCH m.competition " +
+                         "WHERE m.competition.id = :compId AND m.status = 'FINISHED' " +
+                         "ORDER BY (m.homeScore + m.awayScore) DESC, m.utcDate DESC";
+            return em.createQuery(hql, Match.class)
+                    .setParameter("compId", competitionId)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }
