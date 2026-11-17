@@ -8,12 +8,15 @@ import ni.edu.uam.proyectofinalivsemestre.dao.StandingDao;
 import ni.edu.uam.proyectofinalivsemestre.model.Standing;
 import ni.edu.uam.proyectofinalivsemestre.util.UiUtil;
 
+import javafx.stage.FileChooser;
+import ni.edu.uam.proyectofinalivsemestre.service.ReportePdfService;
+import java.awt.Desktop;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -144,31 +147,55 @@ public final class ReporteRendimientoController {
             new Alert(Alert.AlertType.WARNING, "No hay datos para exportar.", ButtonType.OK).show();
             return;
         }
-        String liga = cmbLiga.getValue().replace(" ", "_");
-        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String nombre = "rendimiento_" + liga + "_" + fecha + ".csv";
-        String ruta = System.getProperty("user.home") + File.separator + nombre;
-        try (PrintWriter pw = new PrintWriter(new FileWriter(ruta))) {
-            pw.println("Pos,Equipo,PJ,Pts,Efectividad (%),Goles/Partido,Solidez Def.,Zona");
-            for (FilaRendimiento f : filasCargadas) {
-                pw.println(f.pos() + "," + escapeCsv(f.equipo()) + "," + f.pj() + "," + f.pts() + "," +
-                        escapeCsv(f.efectividad()) + "," + escapeCsv(f.golesPartido()) + "," +
-                        f.solidez() + "," + escapeCsv(f.zona()));
-            }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                    "Archivo guardado en:\n" + ruta, ButtonType.OK);
-            alert.setTitle("Exportación exitosa");
-            alert.setHeaderText("CSV exportado correctamente");
-            alert.show();
-        } catch (Exception ex) {
-            UiUtil.error(ex);
-        }
-    }
+        String liga = cmbLiga.getValue();
+        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-    private String escapeCsv(String s) {
-        if (s == null) return "";
-        if (s.contains(",") || s.contains("\"") || s.contains("\n"))
-            return "\"" + s.replace("\"", "\"\"") + "\"";
-        return s;
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Guardar Reporte PDF");
+        chooser.setInitialFileName("rendimiento_" + liga.replace(" ", "_") + "_" + fecha + ".pdf");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+        File destino = chooser.showSaveDialog(btnExportar.getScene().getWindow());
+        if (destino == null) return;
+
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblRendimiento);
+
+        List<Map<String, ?>> rows = new ArrayList<>();
+        for (FilaRendimiento f : filasCargadas) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("pos",          f.pos());
+            m.put("equipo",       f.equipo());
+            m.put("pj",           f.pj());
+            m.put("pts",          f.pts());
+            m.put("efectividad",  f.efectividad());
+            m.put("golesPartido", f.golesPartido());
+            m.put("solidez",      f.solidez());
+            m.put("zona",         f.zona());
+            rows.add(m);
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("LIGA_NOMBRE",   liga);
+        params.put("FECHA_EMISION", fecha);
+
+        File destinoFinal = destino;
+        UiUtil.async(
+            () -> {
+                ReportePdfService.exportarPdf("/reportes/rendimiento.jrxml", params, rows, destinoFinal);
+                return destinoFinal;
+            },
+            pdf -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblRendimiento);
+                Alert ok = new Alert(Alert.AlertType.INFORMATION,
+                        "PDF guardado en:\n" + pdf.getAbsolutePath(), ButtonType.OK);
+                ok.setTitle("Exportación exitosa");
+                ok.setHeaderText("Reporte generado correctamente");
+                ok.show();
+                try { Desktop.getDesktop().open(pdf); } catch (Exception ignored) {}
+            },
+            ex -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblRendimiento);
+                UiUtil.error(ex);
+            }
+        );
     }
 }

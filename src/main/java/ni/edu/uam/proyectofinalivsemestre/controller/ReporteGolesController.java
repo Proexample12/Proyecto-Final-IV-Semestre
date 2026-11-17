@@ -8,14 +8,17 @@ import ni.edu.uam.proyectofinalivsemestre.dao.MatchDao;
 import ni.edu.uam.proyectofinalivsemestre.model.Match;
 import ni.edu.uam.proyectofinalivsemestre.util.UiUtil;
 
+import javafx.stage.FileChooser;
+import ni.edu.uam.proyectofinalivsemestre.service.ReportePdfService;
+import java.awt.Desktop;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -153,31 +156,58 @@ public final class ReporteGolesController {
             new Alert(Alert.AlertType.WARNING, "No hay datos para exportar.", ButtonType.OK).show();
             return;
         }
-        String liga = cmbLiga.getValue().replace(" ", "_");
-        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String nombre = "goles_" + liga + "_" + fecha + ".csv";
-        String ruta = System.getProperty("user.home") + File.separator + nombre;
-        try (PrintWriter pw = new PrintWriter(new FileWriter(ruta))) {
-            pw.println("Jornada,Local,Marcador,Visitante,Total Goles,Resultado");
-            for (FilaGoles f : filasCargadas) {
-                pw.println((f.jornada() == null ? "" : f.jornada()) + "," +
-                        escapeCsv(f.local()) + "," + escapeCsv(f.marcador()) + "," +
-                        escapeCsv(f.visitante()) + "," + f.totalGoles() + "," + f.resultado());
-            }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                    "Archivo guardado en:\n" + ruta, ButtonType.OK);
-            alert.setTitle("Exportación exitosa");
-            alert.setHeaderText("CSV exportado correctamente");
-            alert.show();
-        } catch (Exception ex) {
-            UiUtil.error(ex);
-        }
-    }
+        String liga = cmbLiga.getValue();
+        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-    private String escapeCsv(String s) {
-        if (s == null) return "";
-        if (s.contains(",") || s.contains("\"") || s.contains("\n"))
-            return "\"" + s.replace("\"", "\"\"") + "\"";
-        return s;
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Guardar Reporte PDF");
+        chooser.setInitialFileName("goles_" + liga.replace(" ", "_") + "_" + fecha + ".pdf");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+        File destino = chooser.showSaveDialog(btnExportar.getScene().getWindow());
+        if (destino == null) return;
+
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblGoles);
+
+        List<Map<String, ?>> rows = new ArrayList<>();
+        for (FilaGoles f : filasCargadas) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("jornada",    f.jornada());
+            m.put("local",      f.local());
+            m.put("marcador",   f.marcador());
+            m.put("visitante",  f.visitante());
+            m.put("totalGoles", f.totalGoles());
+            m.put("resultado",  f.resultado());
+            rows.add(m);
+        }
+
+        // KPIs como parámetros (los valores ya están en los Labels)
+        Map<String, Object> params = new HashMap<>();
+        params.put("LIGA_NOMBRE",   liga);
+        params.put("FECHA_EMISION", fecha);
+        params.put("TOTAL_GOLES",   lblTotalGoles.getText());
+        params.put("PROMEDIO",      lblPromedio.getText());
+        params.put("OVER_25",       lblOver25.getText());
+        params.put("MAX_GOLES",     lblMaxGoles.getText());
+
+        File destinoFinal = destino;
+        UiUtil.async(
+            () -> {
+                ReportePdfService.exportarPdf("/reportes/goles.jrxml", params, rows, destinoFinal);
+                return destinoFinal;
+            },
+            pdf -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblGoles);
+                Alert ok = new Alert(Alert.AlertType.INFORMATION,
+                        "PDF guardado en:\n" + pdf.getAbsolutePath(), ButtonType.OK);
+                ok.setTitle("Exportación exitosa");
+                ok.setHeaderText("Reporte generado correctamente");
+                ok.show();
+                try { Desktop.getDesktop().open(pdf); } catch (Exception ignored) {}
+            },
+            ex -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblGoles);
+                UiUtil.error(ex);
+            }
+        );
     }
 }
