@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public final class MainController {
     @FXML private ToggleGroup grupoNav;
-    @FXML private ToggleButton btnPartidos, btnPosiciones, btnFavoritos;
+    @FXML private ToggleButton btnPartidos, btnPosiciones, btnFavoritos, btnReportes;
     @FXML private Label lblEstadoCache;
     @FXML private StackPane contenido;
     @FXML private void initialize() {
@@ -46,6 +46,7 @@ public final class MainController {
     }
     @FXML private void irAPosiciones() { abrir("posiciones", btnPosiciones); }
     @FXML private void irAFavoritos() { abrir("favoritos", btnFavoritos); }
+    @FXML private void irAReportes() { abrir("reporte_clasificacion", btnReportes); }
     public void abrirDetalle(Long id) {
         FavoritosController c = abrir("favoritos", btnFavoritos);
         if (c != null) c.abrirPartido(id);

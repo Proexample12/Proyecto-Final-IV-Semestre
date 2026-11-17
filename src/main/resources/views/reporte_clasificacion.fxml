@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.ReporteClasificacionController"
+      spacing="16" styleClass="contenido">
+
+    <!-- Cabecera -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Tabla de Clasificación" styleClass="titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="cmbLiga" prefWidth="190" accessibleText="Liga"/>
+        <ProgressIndicator fx:id="piCarga" visible="false" managed="false"
+                           prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24"
+                           accessibleText="Cargando datos"/>
+    </HBox>
+
+    <!-- Mensaje vacío -->
+    <Label fx:id="lblMensaje" styleClass="nota" wrapText="true" visible="false" managed="false"/>
+
+    <!-- KPIs -->
+    <VBox fx:id="panelKpis" spacing="6" styleClass="tarjeta">
+        <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+        <Label text="Estadísticas de temporada" styleClass="subtitulo"/>
+        <HBox spacing="24" alignment="CENTER_LEFT">
+            <Label fx:id="lblLider" styleClass="nota"/>
+            <Label fx:id="lblDefensa" styleClass="nota"/>
+            <Label fx:id="lblAtaque" styleClass="nota"/>
+            <Label fx:id="lblDescenso" styleClass="nota"/>
+        </HBox>
+    </VBox>
+
+    <!-- Tabla -->
+    <TableView fx:id="tblClasificacion" VBox.vgrow="ALWAYS" minHeight="180" styleClass="tarjeta">
+        <columns>
+            <TableColumn fx:id="colPos"    text="Pos" prefWidth="50"  minWidth="40"/>
+            <TableColumn fx:id="colEquipo" text="Equipo" prefWidth="200" minWidth="140"/>
+            <TableColumn fx:id="colPj"     text="PJ"  prefWidth="55"  minWidth="45"/>
+            <TableColumn fx:id="colG"      text="G"   prefWidth="55"  minWidth="45"/>
+            <TableColumn fx:id="colE"      text="E"   prefWidth="55"  minWidth="45"/>
+            <TableColumn fx:id="colP"      text="P"   prefWidth="55"  minWidth="45"/>
+            <TableColumn fx:id="colGf"     text="GF"  prefWidth="55"  minWidth="45"/>
+            <TableColumn fx:id="colGc"     text="GC"  prefWidth="55"  minWidth="45"/>
+            <TableColumn fx:id="colDg"     text="DG"  prefWidth="60"  minWidth="45"/>
+            <TableColumn fx:id="colPts"    text="Pts" prefWidth="60"  minWidth="45"/>
+            <TableColumn fx:id="colRacha"  text="Racha" prefWidth="70" minWidth="55"/>
+        </columns>
+    </TableView>
+
+    <!-- Pie -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnExportar" text="📥 Exportar CSV" onAction="#onExportar" styleClass="btn-primario">
+            <tooltip><Tooltip text="Exportar clasificación en CSV"/></tooltip>
+        </Button>
+    </HBox>
+</VBox>

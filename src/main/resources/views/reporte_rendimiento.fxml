@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.ReporteRendimientoController"
+      spacing="16" styleClass="contenido">
+
+    <!-- Cabecera -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Rendimiento y Eficiencia" styleClass="titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="cmbLiga" prefWidth="190" accessibleText="Liga"/>
+        <ProgressIndicator fx:id="piCarga" visible="false" managed="false"
+                           prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24"
+                           accessibleText="Cargando datos"/>
+    </HBox>
+
+    <!-- Mensaje vacío -->
+    <Label fx:id="lblMensaje" styleClass="nota" wrapText="true" visible="false" managed="false"/>
+
+    <!-- Tabla envuelta en VBox visible -->
+    <VBox fx:id="panelContenido" spacing="8" VBox.vgrow="ALWAYS">
+        <Label text="Ranking de equipos por efectividad" styleClass="subtitulo"/>
+        <TableView fx:id="tblRendimiento" VBox.vgrow="ALWAYS" minHeight="180" styleClass="tarjeta">
+            <columns>
+                <TableColumn fx:id="colPos"          text="Pos"             prefWidth="50"  minWidth="40"/>
+                <TableColumn fx:id="colEquipo"       text="Equipo"          prefWidth="180" minWidth="140"/>
+                <TableColumn fx:id="colPj"           text="PJ"              prefWidth="55"  minWidth="45"/>
+                <TableColumn fx:id="colPts"          text="Pts"             prefWidth="60"  minWidth="45"/>
+                <TableColumn fx:id="colEfectividad"  text="Efectividad (%)" prefWidth="120" minWidth="90"/>
+                <TableColumn fx:id="colGolesPartido" text="Goles/Partido"   prefWidth="120" minWidth="90"/>
+                <TableColumn fx:id="colSolidez"      text="Solidez Def."    prefWidth="110" minWidth="80"/>
+                <TableColumn fx:id="colZona"         text="Zona"            prefWidth="130" minWidth="100"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+    <!-- Pie -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnExportar" text="📥 Exportar CSV" onAction="#onExportar" styleClass="btn-primario">
+            <tooltip><Tooltip text="Exportar reporte de rendimiento en CSV"/></tooltip>
+        </Button>
+    </HBox>
+</VBox>
