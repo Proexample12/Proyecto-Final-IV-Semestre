@@ -2,54 +2,103 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.ReporteClasificacionController"
-      spacing="16" styleClass="contenido">
+      spacing="14" styleClass="contenido">
 
-    <!-- Cabecera -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Tabla de Clasificación" styleClass="titulo"/>
+    <fx:define>
+        <ToggleGroup fx:id="grupoReportes"/>
+    </fx:define>
+
+    <!-- Barra de pestañas para cambiar entre reportes -->
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <HBox spacing="6" styleClass="pestanas-reportes">
+            <ToggleButton fx:id="btnTabClasificacion" text="▥ Clasificación"
+                          selected="true" toggleGroup="$grupoReportes"
+                          styleClass="tab-reporte"/>
+            <ToggleButton fx:id="btnTabGoles" text="⚽ Análisis de Goles"
+                          toggleGroup="$grupoReportes" styleClass="tab-reporte"
+                          onAction="#irAGoles"/>
+            <ToggleButton fx:id="btnTabRendimiento" text="📈 Rendimiento"
+                          toggleGroup="$grupoReportes" styleClass="tab-reporte"
+                          onAction="#irARendimiento"/>
+        </HBox>
         <Region HBox.hgrow="ALWAYS"/>
-        <ComboBox fx:id="cmbLiga" prefWidth="190" accessibleText="Liga"/>
+    </HBox>
+
+    <!-- Cabecera de filtros y controles -->
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <VBox spacing="2">
+            <Label text="Tabla de Clasificación" styleClass="titulo"/>
+            <Label text="Posiciones, estadísticas de temporada y filtro por jornada" styleClass="nota"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="cmbLiga" prefWidth="180" promptText="Seleccionar Liga" accessibleText="Liga"/>
+        <ComboBox fx:id="cmbJornada" prefWidth="180" promptText="Todas las jornadas" accessibleText="Filtro por Jornada"/>
         <ProgressIndicator fx:id="piCarga" visible="false" managed="false"
                            prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24"
                            accessibleText="Cargando datos"/>
     </HBox>
 
-    <!-- Mensaje vacío -->
+    <!-- Mensaje de estado / vacío -->
     <Label fx:id="lblMensaje" styleClass="nota" wrapText="true" visible="false" managed="false"/>
 
-    <!-- KPIs -->
-    <VBox fx:id="panelKpis" spacing="6" styleClass="tarjeta">
-        <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
-        <Label text="Estadísticas de temporada" styleClass="subtitulo"/>
-        <HBox spacing="24" alignment="CENTER_LEFT">
-            <Label fx:id="lblLider" styleClass="nota"/>
-            <Label fx:id="lblDefensa" styleClass="nota"/>
-            <Label fx:id="lblAtaque" styleClass="nota"/>
-            <Label fx:id="lblDescenso" styleClass="nota"/>
+    <!-- Tarjetas de Métricas (KPIs) -->
+    <VBox fx:id="panelKpis" spacing="10">
+        <HBox spacing="12" alignment="CENTER_LEFT">
+            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
+                <Label text="👑 LÍDER DEL TORNEO" styleClass="kpi-titulo"/>
+                <Label fx:id="lblLider" text="—" styleClass="kpi-valor"/>
+                <Label text="Primer lugar en la tabla" styleClass="kpi-subtexto"/>
+            </VBox>
+            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
+                <Label text="🛡️ MEJOR DEFENSA" styleClass="kpi-titulo"/>
+                <Label fx:id="lblDefensa" text="—" styleClass="kpi-valor"/>
+                <Label text="Menor cantidad de goles en contra" styleClass="kpi-subtexto"/>
+            </VBox>
+            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
+                <Label text="⚽ MEJOR ATAQUE" styleClass="kpi-titulo"/>
+                <Label fx:id="lblAtaque" text="—" styleClass="kpi-valor"/>
+                <Label text="Mayor cantidad de goles anotados" styleClass="kpi-subtexto"/>
+            </VBox>
+            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
+                <Label text="📉 ZONA DE DESCENSO" styleClass="kpi-titulo"/>
+                <Label fx:id="lblDescenso" text="—" styleClass="kpi-valor"/>
+                <Label text="Posiciones inferiores en riesgo" styleClass="kpi-subtexto"/>
+            </VBox>
         </HBox>
     </VBox>
 
-    <!-- Tabla -->
-    <TableView fx:id="tblClasificacion" VBox.vgrow="ALWAYS" minHeight="180" styleClass="tarjeta">
+    <!-- Tabla de Clasificación -->
+    <TableView fx:id="tblClasificacion" VBox.vgrow="ALWAYS" minHeight="200" styleClass="tarjeta">
         <columns>
-            <TableColumn fx:id="colPos"    text="Pos" prefWidth="50"  minWidth="40"/>
-            <TableColumn fx:id="colEquipo" text="Equipo" prefWidth="200" minWidth="140"/>
-            <TableColumn fx:id="colPj"     text="PJ"  prefWidth="55"  minWidth="45"/>
-            <TableColumn fx:id="colG"      text="G"   prefWidth="55"  minWidth="45"/>
-            <TableColumn fx:id="colE"      text="E"   prefWidth="55"  minWidth="45"/>
-            <TableColumn fx:id="colP"      text="P"   prefWidth="55"  minWidth="45"/>
-            <TableColumn fx:id="colGf"     text="GF"  prefWidth="55"  minWidth="45"/>
-            <TableColumn fx:id="colGc"     text="GC"  prefWidth="55"  minWidth="45"/>
-            <TableColumn fx:id="colDg"     text="DG"  prefWidth="60"  minWidth="45"/>
-            <TableColumn fx:id="colPts"    text="Pts" prefWidth="60"  minWidth="45"/>
-            <TableColumn fx:id="colRacha"  text="Racha" prefWidth="70" minWidth="55"/>
+            <TableColumn fx:id="colPos"    text="Pos"    prefWidth="50"  minWidth="40" styleClass="centrado, fuerte"/>
+            <TableColumn fx:id="colEquipo" text="Equipo" prefWidth="210" minWidth="140"/>
+            <TableColumn fx:id="colPj"     text="PJ"     prefWidth="55"  minWidth="45" styleClass="centrado"/>
+            <TableColumn fx:id="colG"      text="G"      prefWidth="55"  minWidth="45" styleClass="centrado"/>
+            <TableColumn fx:id="colE"      text="E"      prefWidth="55"  minWidth="45" styleClass="centrado"/>
+            <TableColumn fx:id="colP"      text="P"      prefWidth="55"  minWidth="45" styleClass="centrado"/>
+            <TableColumn fx:id="colGf"     text="GF"     prefWidth="55"  minWidth="45" styleClass="centrado"/>
+            <TableColumn fx:id="colGc"     text="GC"     prefWidth="55"  minWidth="45" styleClass="centrado"/>
+            <TableColumn fx:id="colDg"     text="DG"     prefWidth="60"  minWidth="45" styleClass="centrado"/>
+            <TableColumn fx:id="colPts"    text="Pts"    prefWidth="65"  minWidth="50" styleClass="centrado, fuerte"/>
+            <TableColumn fx:id="colRacha"  text="Racha"  prefWidth="75"  minWidth="60" styleClass="centrado"/>
         </columns>
     </TableView>
 
-    <!-- Pie -->
-    <HBox spacing="10" alignment="CENTER_RIGHT">
+    <!-- Pie: Leyenda, resumen y exportación -->
+    <HBox spacing="12" alignment="CENTER_LEFT">
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Region prefWidth="12" prefHeight="12" styleClass="leyenda-champions"/>
+            <Label text="Zona Champions" styleClass="nota"/>
+        </HBox>
+        <Label text="·" styleClass="nota"/>
+        <Label fx:id="lblResumenTabla" text="Mostrando posiciones" styleClass="nota"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnExportarCsv" text="📥 Exportar CSV" onAction="#onExportarCsv" styleClass="btn-secundario">
+            <tooltip><Tooltip text="Exportar clasificación en formato CSV"/></tooltip>
+        </Button>
         <Button fx:id="btnExportar" text="📄 Exportar PDF" onAction="#onExportar" styleClass="btn-primario">
             <tooltip><Tooltip text="Exportar reporte en formato PDF"/></tooltip>
         </Button>
