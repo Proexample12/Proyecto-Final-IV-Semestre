@@ -49,8 +49,8 @@
 
     <!-- Pie -->
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="btnExportar" text="📥 Exportar CSV" onAction="#onExportar" styleClass="btn-primario">
-            <tooltip><Tooltip text="Exportar análisis de goles en CSV"/></tooltip>
+        <Button fx:id="btnExportar" text="📄 Exportar PDF" onAction="#onExportar" styleClass="btn-primario">
+            <tooltip><Tooltip text="Exportar reporte de goles en formato PDF"/></tooltip>
         </Button>
     </HBox>
 </VBox>
