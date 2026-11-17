@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.ReporteGolesController"
+      spacing="16" styleClass="contenido">
+
+    <!-- Cabecera -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Análisis de Goles" styleClass="titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <ComboBox fx:id="cmbLiga" prefWidth="190" accessibleText="Liga"/>
+        <ProgressIndicator fx:id="piCarga" visible="false" managed="false"
+                           prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24"
+                           accessibleText="Cargando datos"/>
+    </HBox>
+
+    <!-- Mensaje vacío -->
+    <Label fx:id="lblMensaje" styleClass="nota" wrapText="true" visible="false" managed="false"/>
+
+    <!-- KPIs -->
+    <VBox fx:id="panelKpis" spacing="6" styleClass="tarjeta">
+        <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+        <Label text="Estadísticas de goles" styleClass="subtitulo"/>
+        <HBox spacing="24" alignment="CENTER_LEFT" wrap="true">
+            <Label fx:id="lblTotalGoles" styleClass="nota"/>
+            <Label fx:id="lblPromedio" styleClass="nota"/>
+            <Label fx:id="lblPartidosJugados" styleClass="nota"/>
+            <Label fx:id="lblOver25" styleClass="nota"/>
+        </HBox>
+        <HBox spacing="24" alignment="CENTER_LEFT">
+            <Label fx:id="lblMaxGoles" styleClass="nota" wrapText="true" maxWidth="400"/>
+            <Label fx:id="lblMinGoles" styleClass="nota" wrapText="true" maxWidth="400"/>
+        </HBox>
+    </VBox>
+
+    <!-- Tabla -->
+    <TableView fx:id="tblGoles" VBox.vgrow="ALWAYS" minHeight="180" styleClass="tarjeta">
+        <columns>
+            <TableColumn fx:id="colJornada"   text="Jornada"      prefWidth="80"  minWidth="60"/>
+            <TableColumn fx:id="colLocal"     text="Local"        prefWidth="180" minWidth="130"/>
+            <TableColumn fx:id="colMarcador"  text="Marcador"     prefWidth="90"  minWidth="70"/>
+            <TableColumn fx:id="colVisitante" text="Visitante"    prefWidth="180" minWidth="130"/>
+            <TableColumn fx:id="colTotal"     text="Total Goles"  prefWidth="100" minWidth="80"/>
+            <TableColumn fx:id="colResultado" text="Resultado"    prefWidth="110" minWidth="80"/>
+        </columns>
+    </TableView>
+
+    <!-- Pie -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnExportar" text="📄 Exportar PDF" onAction="#onExportar" styleClass="btn-primario">
+            <tooltip><Tooltip text="Exportar reporte de goles en formato PDF"/></tooltip>
+        </Button>
+    </HBox>
+</VBox>

@@ -8,6 +8,8 @@ module ni.edu.uam.proyectofinalivsemestre {
     requires com.google.gson;
     requires org.hibernate.orm.core;
     requires jakarta.persistence;
+    requires java.desktop;
+    requires jasperreports;
 
     opens ni.edu.uam.proyectofinalivsemestre.model to org.hibernate.orm.core, jakarta.persistence, javafx.base, com.google.gson;
     opens ni.edu.uam.proyectofinalivsemestre.config to org.hibernate.orm.core, jakarta.persistence;

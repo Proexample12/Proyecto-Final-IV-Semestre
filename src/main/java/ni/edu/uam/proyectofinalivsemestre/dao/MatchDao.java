@@ -103,4 +103,25 @@ public class MatchDao extends GenericDao<Match, Integer> {
             return q.getResultList();
         }
     }
+
+    /**
+     * Obtiene partidos FINALIZADOS de una competición ordenados por total de goles DESC.
+     * Usada por el Reporte de Análisis de Goles.
+     */
+    public List<Match> findFinishedMatchesByCompetition(int competitionId) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            String hql = "SELECT m FROM Match m " +
+                         "JOIN FETCH m.homeTeam " +
+                         "JOIN FETCH m.awayTeam " +
+                         "JOIN FETCH m.competition " +
+                         "WHERE m.competition.id = :compId AND m.status = 'FINISHED' " +
+                         "ORDER BY (m.homeScore + m.awayScore) DESC, m.utcDate DESC";
+            return em.createQuery(hql, Match.class)
+                    .setParameter("compId", competitionId)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }

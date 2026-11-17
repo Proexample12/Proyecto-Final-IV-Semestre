@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+                http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="clasificacion"
+              pageWidth="842" pageHeight="595"
+              orientation="Landscape"
+              columnWidth="802" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20">
+
+  <parameter name="LIGA_NOMBRE" class="java.lang.String"/>
+  <parameter name="FECHA_EMISION" class="java.lang.String"/>
+
+  <field name="pos"    class="java.lang.Integer"/>
+  <field name="equipo" class="java.lang.String"/>
+  <field name="pj"     class="java.lang.Integer"/>
+  <field name="g"      class="java.lang.Integer"/>
+  <field name="e"      class="java.lang.Integer"/>
+  <field name="p"      class="java.lang.Integer"/>
+  <field name="gf"     class="java.lang.Integer"/>
+  <field name="gc"     class="java.lang.Integer"/>
+  <field name="dg"     class="java.lang.Integer"/>
+  <field name="pts"    class="java.lang.Integer"/>
+  <field name="racha"  class="java.lang.String"/>
+
+  <style name="titulo"
+         fontName="SansSerif" fontSize="16" isBold="true"
+         forecolor="#FFFFFF" backcolor="#17775A"
+         mode="Opaque" hTextAlign="Left" vTextAlign="Middle"/>
+
+  <style name="encabezado"
+         fontName="SansSerif" fontSize="9" isBold="true"
+         forecolor="#FFFFFF" backcolor="#0F2A24"
+         mode="Opaque" hTextAlign="Center" vTextAlign="Middle">
+    <box>
+      <pen lineWidth="0.5" lineColor="#FFFFFF"/>
+    </box>
+  </style>
+
+  <style name="filaNormal"
+         fontName="SansSerif" fontSize="8"
+         forecolor="#14221E"
+         hTextAlign="Center" vTextAlign="Middle"
+         mode="Opaque">
+    <box>
+      <pen lineWidth="0.3" lineColor="#DCE5E0"/>
+    </box>
+    <conditionalStyle>
+      <conditionExpression><![CDATA[$F{pos} != null && $F{pos} % 2 == 0]]></conditionExpression>
+      <style backcolor="#F2F5F3" mode="Opaque"/>
+    </conditionalStyle>
+    <conditionalStyle>
+      <conditionExpression><![CDATA[$F{pos} != null && $F{pos} <= 4]]></conditionExpression>
+      <style backcolor="#D6EDFF" mode="Opaque"/>
+    </conditionalStyle>
+    <conditionalStyle>
+      <conditionExpression><![CDATA[$F{pos} != null && $F{pos} >= 5 && $F{pos} <= 6]]></conditionExpression>
+      <style backcolor="#FFF3CD" mode="Opaque"/>
+    </conditionalStyle>
+    <conditionalStyle>
+      <conditionExpression><![CDATA[$F{pos} != null && $F{pos} >= 18]]></conditionExpression>
+      <style backcolor="#FFDAD6" mode="Opaque"/>
+    </conditionalStyle>
+  </style>
+
+  <style name="filaNombreEquipo"
+         style="filaNormal"
+         hTextAlign="Left">
+    <box leftPadding="5"/>
+  </style>
+
+  <style name="footer"
+         fontName="SansSerif" fontSize="8"
+         forecolor="#4A5B55" hTextAlign="Left" vTextAlign="Middle"/>
+
+  <title>
+    <band height="44" splitType="Stretch">
+      <rectangle>
+        <reportElement x="0" y="0" width="802" height="44" backcolor="#17775A" mode="Opaque">
+          <property name="com.jaspersoft.studio.unit.height" value="px"/>
+        </reportElement>
+        <graphicElement>
+          <pen lineWidth="0.0"/>
+        </graphicElement>
+      </rectangle>
+      <textField>
+        <reportElement style="titulo" x="12" y="0" width="580" height="44" forecolor="#FFFFFF" backcolor="#17775A"/>
+        <textElement textAlignment="Left" verticalAlignment="Middle">
+          <font fontName="SansSerif" size="16" isBold="true"/>
+        </textElement>
+        <textFieldExpression><![CDATA["Tabla de Posiciones - " + $P{LIGA_NOMBRE}]]></textFieldExpression>
+      </textField>
+      <textField>
+        <reportElement x="600" y="12" width="190" height="20" forecolor="#E0F2E9"/>
+        <textElement textAlignment="Right" verticalAlignment="Middle">
+          <font fontName="SansSerif" size="9"/>
+        </textElement>
+        <textFieldExpression><![CDATA["Fecha de emisión: " + $P{FECHA_EMISION}]]></textFieldExpression>
+      </textField>
+    </band>
+  </title>
+
+  <columnHeader>
+    <band height="22" splitType="Stretch">
+      <staticText>
+        <reportElement style="encabezado" x="0" y="0" width="35" height="22"/>
+        <text><![CDATA[#]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="35" y="0" width="195" height="22"/>
+        <textElement textAlignment="Left">
+          <font fontName="SansSerif" size="9" isBold="true"/>
+        </textElement>
+        <box leftPadding="5"/>
+        <text><![CDATA[Equipo]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="230" y="0" width="50" height="22"/>
+        <text><![CDATA[PJ]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="280" y="0" width="50" height="22"/>
+        <text><![CDATA[G]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="330" y="0" width="50" height="22"/>
+        <text><![CDATA[E]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="380" y="0" width="50" height="22"/>
+        <text><![CDATA[P]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="430" y="0" width="60" height="22"/>
+        <text><![CDATA[GF]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="490" y="0" width="60" height="22"/>
+        <text><![CDATA[GC]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="550" y="0" width="60" height="22"/>
+        <text><![CDATA[DG]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="610" y="0" width="70" height="22"/>
+        <text><![CDATA[Pts]]></text>
+      </staticText>
+      <staticText>
+        <reportElement style="encabezado" x="680" y="0" width="122" height="22"/>
+        <text><![CDATA[Racha]]></text>
+      </staticText>
+    </band>
+  </columnHeader>
+
+  <detail>
+    <band height="18" splitType="Stretch">
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="0" y="0" width="35" height="18"/>
+        <textFieldExpression><![CDATA[$F{pos}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNombreEquipo" x="35" y="0" width="195" height="18"/>
+        <textFieldExpression><![CDATA[$F{equipo}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="230" y="0" width="50" height="18"/>
+        <textFieldExpression><![CDATA[$F{pj}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="280" y="0" width="50" height="18"/>
+        <textFieldExpression><![CDATA[$F{g}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="330" y="0" width="50" height="18"/>
+        <textFieldExpression><![CDATA[$F{e}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="380" y="0" width="50" height="18"/>
+        <textFieldExpression><![CDATA[$F{p}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="430" y="0" width="60" height="18"/>
+        <textFieldExpression><![CDATA[$F{gf}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="490" y="0" width="60" height="18"/>
+        <textFieldExpression><![CDATA[$F{gc}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="550" y="0" width="60" height="18"/>
+        <textFieldExpression><![CDATA[$F{dg} != null && $F{dg} >= 0 ? "+" + $F{dg} : String.valueOf($F{dg})]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="610" y="0" width="70" height="18"/>
+        <textElement>
+          <font fontName="SansSerif" size="8" isBold="true"/>
+        </textElement>
+        <textFieldExpression><![CDATA[$F{pts}]]></textFieldExpression>
+      </textField>
+      <textField isBlankWhenNull="true">
+        <reportElement style="filaNormal" x="680" y="0" width="122" height="18"/>
+        <textFieldExpression><![CDATA[$F{racha}]]></textFieldExpression>
+      </textField>
+    </band>
+  </detail>
+
+  <pageFooter>
+    <band height="24">
+      <line>
+        <reportElement x="0" y="2" width="802" height="1" forecolor="#DCE5E0"/>
+      </line>
+      <staticText>
+        <reportElement style="footer" x="0" y="5" width="400" height="18"/>
+        <text><![CDATA[Generado por: Sistema de Futbol]]></text>
+      </staticText>
+      <textField>
+        <reportElement style="footer" x="650" y="5" width="152" height="18"/>
+        <textElement textAlignment="Right"/>
+        <textFieldExpression><![CDATA["Pág. " + $V{PAGE_NUMBER}]]></textFieldExpression>
+      </textField>
+    </band>
+  </pageFooter>
+
+</jasperReport>
