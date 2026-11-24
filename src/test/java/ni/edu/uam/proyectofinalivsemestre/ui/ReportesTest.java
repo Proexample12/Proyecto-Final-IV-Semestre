@@ -11,6 +11,27 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ReportesTest {
 
     @Test
+    void testPlantillasCompilanYGeneranPdf() throws Exception {
+        for (String nombre : new String[]{"clasificacion", "goles", "rendimiento"}) {
+            try (var in = getClass().getResourceAsStream("/reportes/" + nombre + ".jrxml")) {
+                var reporte = net.sf.jasperreports.engine.JasperCompileManager.compileReport(in);
+                var fila = new java.util.HashMap<String, Object>();
+                for (var campo : reporte.getFields()) {
+                    fila.put(campo.getName(), campo.getValueClass() == Integer.class ? 1 : "Prueba");
+                }
+                var datos = new net.sf.jasperreports.engine.data.JRMapCollectionDataSource(
+                        java.util.List.<java.util.Map<String, ?>>of(fila));
+                var print = net.sf.jasperreports.engine.JasperFillManager.fillReport(
+                        reporte, new java.util.HashMap<>(), datos);
+                byte[] pdf = net.sf.jasperreports.engine.JasperExportManager.exportReportToPdf(print);
+                assertFalse(print.getPages().isEmpty(), nombre);
+                assertTrue(new String(pdf, 0, 5, java.nio.charset.StandardCharsets.US_ASCII)
+                        .equals("%PDF-"), nombre);
+            }
+        }
+    }
+
+    @Test
     @DisplayName("FilaGoles almacena correctamente datos de partido y total de goles")
     void testFilaGoles() {
         var fila = new ReporteGolesController.FilaGoles(
