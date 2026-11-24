@@ -127,7 +127,7 @@ public final class ReporteGolesController {
         lblMensaje.setVisible(false);
 
         UiUtil.async(
-                () -> dao.findFinishedByCompetitionOrdered(compId),
+                () -> dao.findFinishedMatchesByCompetition(compId),
                 partidos -> {
                     UiUtil.ocupado(false, piCarga, cmbLiga, cmbJornada, btnExportar, btnExportarCsv, tblGoles);
                     partidosLiga = partidos;

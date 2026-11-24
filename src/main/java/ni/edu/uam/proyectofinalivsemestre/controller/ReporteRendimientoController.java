@@ -152,7 +152,7 @@ public final class ReporteRendimientoController {
         UiUtil.async(
                 () -> {
                     List<Standing> standings = standingDao.findStandingsByCompetitionOrdered(compId);
-                    List<Match> matches = matchDao.findFinishedByCompetitionOrdered(compId);
+                    List<Match> matches = matchDao.findFinishedMatchesByCompetition(compId);
                     return new DatosCargados(standings, matches);
                 },
                 datos -> {
@@ -263,7 +263,7 @@ public final class ReporteRendimientoController {
     }
 
     private void calcularRendimientoHastaJornada(int hastaJornada) {
-        Map<Long, AcumuladorRendimiento> mapa = new HashMap<>();
+        Map<Integer, AcumuladorRendimiento> mapa = new HashMap<>();
 
         for (Standing s : standingsOriginales) {
             mapa.put(s.getTeam().getId(), new AcumuladorRendimiento(s.getTeam()));
@@ -309,7 +309,7 @@ public final class ReporteRendimientoController {
                         .thenComparing(a -> a.team.getName()))
                 .toList();
 
-        Map<Long, Integer> posicionesTorneo = new HashMap<>();
+        Map<Integer, Integer> posicionesTorneo = new HashMap<>();
         for (int i = 0; i < ordenTorneo.size(); i++) {
             posicionesTorneo.put(ordenTorneo.get(i).team.getId(), i + 1);
         }

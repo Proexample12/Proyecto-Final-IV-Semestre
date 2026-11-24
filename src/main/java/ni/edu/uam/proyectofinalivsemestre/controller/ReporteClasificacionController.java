@@ -138,7 +138,7 @@ public final class ReporteClasificacionController {
         UiUtil.async(
                 () -> {
                     List<Standing> standings = standingDao.findStandingsByCompetitionOrdered(compId);
-                    List<Match> matches = matchDao.findFinishedByCompetitionOrdered(compId);
+                    List<Match> matches = matchDao.findFinishedMatchesByCompetition(compId);
                     return new DatosCargados(standings, matches);
                 },
                 datos -> {
@@ -256,7 +256,7 @@ public final class ReporteClasificacionController {
         int compId = LIGA_IDS.getOrDefault(liga, 2014);
         int descensoPosMin = compId == 2001 ? 24 : 18;
 
-        Map<Long, AcumuladorEquipo> mapa = new HashMap<>();
+        Map<Integer, AcumuladorEquipo> mapa = new HashMap<>();
 
         for (Standing s : standingsOriginales) {
             mapa.put(s.getTeam().getId(), new AcumuladorEquipo(s.getTeam()));
