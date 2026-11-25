@@ -23,7 +23,7 @@
     <VBox fx:id="panelKpis" spacing="6" styleClass="tarjeta">
         <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
         <Label text="Estadísticas de goles" styleClass="subtitulo"/>
-        <HBox spacing="24" alignment="CENTER_LEFT" wrap="true">
+        <HBox spacing="24" alignment="CENTER_LEFT">
             <Label fx:id="lblTotalGoles" styleClass="nota"/>
             <Label fx:id="lblPromedio" styleClass="nota"/>
             <Label fx:id="lblPartidosJugados" styleClass="nota"/>
