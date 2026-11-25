@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.ReportesController"
+      spacing="0">
+    <fx:define><ToggleGroup fx:id="grupoReportes"/></fx:define>
+
+    <HBox alignment="CENTER_LEFT">
+        <padding><Insets top="18" right="28" bottom="0" left="28"/></padding>
+        <HBox spacing="4" styleClass="pestanas-reportes" alignment="CENTER_LEFT">
+            <ToggleButton fx:id="btnClasificacion" text="Clasificación"
+                          toggleGroup="$grupoReportes" onAction="#irAClasificacion"
+                          styleClass="tab-reporte"/>
+            <ToggleButton fx:id="btnGoles" text="Goles"
+                          toggleGroup="$grupoReportes" onAction="#irAGoles"
+                          styleClass="tab-reporte"/>
+            <ToggleButton fx:id="btnRendimiento" text="Rendimiento"
+                          toggleGroup="$grupoReportes" onAction="#irARendimiento"
+                          styleClass="tab-reporte"/>
+        </HBox>
+    </HBox>
+
+    <StackPane fx:id="contenedorReporte" VBox.vgrow="ALWAYS"/>
+</VBox>
