@@ -35,6 +35,16 @@ class HighlightlyTest {
         match.getAsJsonObject("awayTeam").addProperty("name", "Jong PSV");
         assertFalse(HighlightlyService.coincide(principal, match));
     }
+    @Test void identidadGuardadaSobreviveCambioDeNombre() throws Exception {
+        var principal = fixture("principal"); var match = fixture("match");
+        for (String lado : List.of("homeTeam", "awayTeam")) {
+            principal.getAsJsonObject(lado).add("highlightlyId", match.getAsJsonObject(lado).get("id"));
+            match.getAsJsonObject(lado).addProperty("name", "Nombre nuevo del proveedor");
+        }
+        assertTrue(HighlightlyService.coincide(principal, match));
+        match.getAsJsonObject("homeTeam").addProperty("id", -1);
+        assertFalse(HighlightlyService.coincide(principal, match));
+    }
     static JsonObject fixture(String nombre) throws IOException {
         try(var in=HighlightlyTest.class.getResourceAsStream("/highlightly/"+nombre+".json")) {
             return JsonParser.parseString(new String(Objects.requireNonNull(in).readAllBytes(),java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();

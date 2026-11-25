@@ -131,6 +131,8 @@ public class HighlightlyService {
         };
     }
     private static boolean mismoEquipo(JsonObject a, JsonObject b) {
+        Integer conocido = integer(a,"highlightlyId");
+        if (conocido != null) return conocido.equals(integer(b,"id"));
         String destino = nombre(text(b,"name",""));
         return !destino.isBlank() && (destino.equals(nombre(text(a,"name",""))) || destino.equals(nombre(text(a,"shortName",""))));
     }
