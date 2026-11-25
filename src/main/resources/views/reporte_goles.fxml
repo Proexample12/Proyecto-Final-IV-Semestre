@@ -1,120 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.chart.*?>
 <?import javafx.geometry.Insets?>
-
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="ni.edu.uam.proyectofinalivsemestre.controller.ReporteGolesController"
-      spacing="14" styleClass="contenido">
+      spacing="16" styleClass="contenido">
 
-    <fx:define>
-        <ToggleGroup fx:id="grupoReportes"/>
-    </fx:define>
-
-    <!-- Barra de pestañas para cambiar entre reportes -->
-    <HBox spacing="8" alignment="CENTER_LEFT">
-        <HBox spacing="6" styleClass="pestanas-reportes">
-            <ToggleButton fx:id="btnTabClasificacion" text="▥ Clasificación"
-                          toggleGroup="$grupoReportes" styleClass="tab-reporte"
-                          onAction="#irAClasificacion"/>
-            <ToggleButton fx:id="btnTabGoles" text="⚽ Análisis de Goles"
-                          selected="true" toggleGroup="$grupoReportes"
-                          styleClass="tab-reporte"/>
-            <ToggleButton fx:id="btnTabRendimiento" text="📈 Rendimiento"
-                          toggleGroup="$grupoReportes" styleClass="tab-reporte"
-                          onAction="#irARendimiento"/>
-        </HBox>
+    <!-- Cabecera -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Análisis de Goles" styleClass="titulo"/>
         <Region HBox.hgrow="ALWAYS"/>
-    </HBox>
-
-    <!-- Cabecera de filtros y controles -->
-    <HBox spacing="12" alignment="CENTER_LEFT">
-        <VBox spacing="2">
-            <Label text="Análisis de Goles" styleClass="titulo"/>
-            <Label text="Estadísticas de anotaciones y distribución por jornada" styleClass="nota"/>
-        </VBox>
-        <Region HBox.hgrow="ALWAYS"/>
-        <ComboBox fx:id="cmbLiga" prefWidth="180" promptText="Seleccionar Liga" accessibleText="Liga"/>
-        <ComboBox fx:id="cmbJornada" prefWidth="180" promptText="Todas las jornadas" accessibleText="Filtro por Jornada"/>
+        <ComboBox fx:id="cmbLiga" prefWidth="190" accessibleText="Liga"/>
         <ProgressIndicator fx:id="piCarga" visible="false" managed="false"
                            prefWidth="24" prefHeight="24" maxWidth="24" maxHeight="24"
                            accessibleText="Cargando datos"/>
     </HBox>
 
-    <!-- Mensaje de estado / vacío -->
+    <!-- Mensaje vacío -->
     <Label fx:id="lblMensaje" styleClass="nota" wrapText="true" visible="false" managed="false"/>
 
-    <!-- Tarjetas de Métricas (KPIs) -->
-    <VBox fx:id="panelKpis" spacing="10">
-        <HBox spacing="12" alignment="CENTER_LEFT">
-            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
-                <Label text="TOTAL GOLES" styleClass="kpi-titulo"/>
-                <Label fx:id="lblTotalGoles" text="0" styleClass="kpi-valor"/>
-                <Label text="Anotaciones registradas" styleClass="kpi-subtexto"/>
-            </VBox>
-            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
-                <Label text="PROMEDIO / PARTIDO" styleClass="kpi-titulo"/>
-                <Label fx:id="lblPromedio" text="0.00" styleClass="kpi-valor"/>
-                <Label text="Goles por encuentro" styleClass="kpi-subtexto"/>
-            </VBox>
-            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
-                <Label text="PARTIDOS JUGADOS" styleClass="kpi-titulo"/>
-                <Label fx:id="lblPartidosJugados" text="0" styleClass="kpi-valor"/>
-                <Label text="Encuentros finalizados" styleClass="kpi-subtexto"/>
-            </VBox>
-            <VBox styleClass="tarjeta-kpi" HBox.hgrow="ALWAYS" spacing="3">
-                <Label text="OVER 2.5 GOLES" styleClass="kpi-titulo"/>
-                <Label fx:id="lblOver25" text="0.0%" styleClass="kpi-valor"/>
-                <Label fx:id="lblOver25Sub" text="0 partidos con +2.5 goles" styleClass="kpi-subtexto"/>
-            </VBox>
+    <!-- KPIs -->
+    <VBox fx:id="panelKpis" spacing="6" styleClass="tarjeta">
+        <padding><Insets top="12" right="16" bottom="12" left="16"/></padding>
+        <Label text="Estadísticas de goles" styleClass="subtitulo"/>
+        <HBox spacing="24" alignment="CENTER_LEFT" wrap="true">
+            <Label fx:id="lblTotalGoles" styleClass="nota"/>
+            <Label fx:id="lblPromedio" styleClass="nota"/>
+            <Label fx:id="lblPartidosJugados" styleClass="nota"/>
+            <Label fx:id="lblOver25" styleClass="nota"/>
         </HBox>
-
-        <HBox spacing="12" alignment="CENTER_LEFT">
-            <Label fx:id="lblMaxGoles" text="🔥 Más goles: —" styleClass="badge-record" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Label fx:id="lblMinGoles" text="🔒 Menos goles: —" styleClass="badge-record" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+        <HBox spacing="24" alignment="CENTER_LEFT">
+            <Label fx:id="lblMaxGoles" styleClass="nota" wrapText="true" maxWidth="400"/>
+            <Label fx:id="lblMinGoles" styleClass="nota" wrapText="true" maxWidth="400"/>
         </HBox>
     </VBox>
 
-    <!-- Gráfica de Barras JavaFX (BarChart) -->
-    <VBox fx:id="panelGrafica" spacing="6" styleClass="panel-grafica">
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label fx:id="lblTituloGrafica" text="📊 Distribución de Goles" styleClass="titulo-grafica"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="lblSubtituloGrafica" text="Total de anotaciones" styleClass="nota"/>
-        </HBox>
-        <BarChart fx:id="chartGoles" animated="false" prefHeight="190" minHeight="160" maxHeight="230"
-                  legendVisible="false">
-            <xAxis>
-                <CategoryAxis fx:id="axisX" label="Jornada"/>
-            </xAxis>
-            <yAxis>
-                <NumberAxis fx:id="axisY" label="Goles"/>
-            </yAxis>
-        </BarChart>
-    </VBox>
-
-    <!-- Tabla de partidos -->
-    <TableView fx:id="tblGoles" VBox.vgrow="ALWAYS" minHeight="160" styleClass="tarjeta">
+    <!-- Tabla -->
+    <TableView fx:id="tblGoles" VBox.vgrow="ALWAYS" minHeight="180" styleClass="tarjeta">
         <columns>
-            <TableColumn fx:id="colJornada"   text="Jornada"     prefWidth="80"  minWidth="65"  styleClass="centrado"/>
-            <TableColumn fx:id="colLocal"     text="Local"       prefWidth="190" minWidth="130"/>
-            <TableColumn fx:id="colMarcador"  text="Marcador"    prefWidth="90"  minWidth="70"  styleClass="centrado, fuerte"/>
-            <TableColumn fx:id="colVisitante" text="Visitante"   prefWidth="190" minWidth="130"/>
-            <TableColumn fx:id="colTotal"     text="Total Goles" prefWidth="95"  minWidth="80"  styleClass="centrado"/>
-            <TableColumn fx:id="colResultado" text="Resultado"   prefWidth="110" minWidth="85"  styleClass="centrado"/>
+            <TableColumn fx:id="colJornada"   text="Jornada"      prefWidth="80"  minWidth="60"/>
+            <TableColumn fx:id="colLocal"     text="Local"        prefWidth="180" minWidth="130"/>
+            <TableColumn fx:id="colMarcador"  text="Marcador"     prefWidth="90"  minWidth="70"/>
+            <TableColumn fx:id="colVisitante" text="Visitante"    prefWidth="180" minWidth="130"/>
+            <TableColumn fx:id="colTotal"     text="Total Goles"  prefWidth="100" minWidth="80"/>
+            <TableColumn fx:id="colResultado" text="Resultado"    prefWidth="110" minWidth="80"/>
         </columns>
     </TableView>
 
-    <!-- Pie: Resumen y botón de exportación -->
-    <HBox spacing="12" alignment="CENTER_LEFT">
-        <Label fx:id="lblResumenTabla" text="Mostrando datos" styleClass="nota"/>
-        <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="btnExportarCsv" text="📥 Exportar CSV" onAction="#onExportarCsv" styleClass="btn-secundario">
-            <tooltip><Tooltip text="Exportar análisis de goles actual en formato CSV"/></tooltip>
+    <!-- Pie -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="btnVistaPrevia" text="Ver y Exportar Reporte" onAction="#onVistaPrevia" styleClass="btn-primario">
+            <tooltip><Tooltip text="Abrir vista previa interactiva para visualizar, imprimir o guardar el reporte de goles"/></tooltip>
         </Button>
-        <Button fx:id="btnExportar" text="📄 Exportar PDF" onAction="#onExportar" styleClass="btn-primario">
-            <tooltip><Tooltip text="Exportar reporte de goles en formato PDF"/></tooltip>
+        <Button fx:id="btnExportar" text="📄 Guardar PDF" onAction="#onExportar" styleClass="btn-secundario">
+            <tooltip><Tooltip text="Guardar directamente el reporte en formato PDF"/></tooltip>
         </Button>
     </HBox>
 </VBox>
