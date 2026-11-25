@@ -251,9 +251,7 @@ public final class ServiciosReales implements PartidoService, PosicionService, F
         sincronizaciones.put("apisports/" + id, Instant.now());
     }
     private static String nombreComparable(String nombre) {
-        return java.text.Normalizer.normalize(nombre, java.text.Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT)
-                .replaceAll("\\b(fc|cf|afc|ac|sc)\\b", "").replaceAll("[^a-z0-9]", "");
+        return ni.edu.uam.proyectofinalivsemestre.service.highlightly.HighlightlyService.nombre(nombre);
     }
     static boolean mismoEquipo(JsonObject principal, JsonObject secundario) {
         String otro = nombreComparable(texto(secundario,"name",""));
