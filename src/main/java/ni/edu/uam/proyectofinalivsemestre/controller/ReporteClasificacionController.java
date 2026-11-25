@@ -41,7 +41,7 @@ public final class ReporteClasificacionController {
     @FXML private TableView<FilaReporte> tblClasificacion;
     @FXML private TableColumn<FilaReporte, Object> colPos, colEquipo, colPj, colG, colE, colP,
             colGf, colGc, colDg, colPts, colRacha;
-    @FXML private Button btnExportar;
+    @FXML private Button btnExportar, btnVistaPrevia;
     @FXML private ProgressIndicator piCarga;
 
     private final StandingDao dao = new StandingDao();
@@ -81,13 +81,13 @@ public final class ReporteClasificacionController {
         int compId = LIGA_IDS.get(liga);
         int descensoPosMin = compId == 2001 ? 24 : 18;
 
-        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblClasificacion);
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
         lblMensaje.setVisible(false);
 
         UiUtil.async(
                 () -> dao.findStandingsByCompetitionOrdered(compId),
                 standings -> {
-                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblClasificacion);
+                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
                     if (standings.isEmpty()) {
                         lblMensaje.setText("No hay datos disponibles. Sincroniza la aplicación primero.");
                         lblMensaje.setVisible(true);
@@ -135,7 +135,7 @@ public final class ReporteClasificacionController {
                     tblClasificacion.getItems().setAll(filasCargadas);
                 },
                 e -> {
-                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblClasificacion);
+                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
                     UiUtil.error(e);
                 }
         );
@@ -145,6 +145,55 @@ public final class ReporteClasificacionController {
         if (s.getWon() > s.getLost()) return "V";
         if (s.getLost() > s.getWon()) return "D";
         return "E";
+    }
+
+    private List<Map<String, ?>> obtenerFilasComoMap() {
+        List<Map<String, ?>> rows = new ArrayList<>();
+        for (FilaReporte f : filasCargadas) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("pos",    f.pos());
+            m.put("equipo", f.equipo());
+            m.put("pj",     f.pj());
+            m.put("g",      f.g());
+            m.put("e",      f.e());
+            m.put("p",      f.p());
+            m.put("gf",     f.gf());
+            m.put("gc",     f.gc());
+            m.put("dg",     f.dg());
+            m.put("pts",    f.pts());
+            m.put("racha",  f.racha());
+            rows.add(m);
+        }
+        return rows;
+    }
+
+    @FXML
+    private void onVistaPrevia() {
+        if (filasCargadas.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "No hay datos para generar el reporte.", ButtonType.OK).show();
+            return;
+        }
+        String liga = cmbLiga.getValue();
+        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
+
+        List<Map<String, ?>> rows = obtenerFilasComoMap();
+        Map<String, Object> params = new HashMap<>();
+        params.put("LIGA_NOMBRE",   liga);
+        params.put("FECHA_EMISION", fecha);
+
+        UiUtil.async(
+            () -> ReportePdfService.generarJasperPrint("/reportes/clasificacion.jrxml", params, rows),
+            print -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
+                ReportePdfService.mostrarVistaPrevia(print, "Tabla de Posiciones - " + liga);
+            },
+            ex -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
+                UiUtil.error(ex);
+            }
+        );
     }
 
     @FXML
@@ -164,26 +213,9 @@ public final class ReporteClasificacionController {
         File destino = chooser.showSaveDialog(btnExportar.getScene().getWindow());
         if (destino == null) return;
 
-        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblClasificacion);
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
 
-        // Convertir records a Maps para JRMapCollectionDataSource
-        List<Map<String, ?>> rows = new ArrayList<>();
-        for (FilaReporte f : filasCargadas) {
-            Map<String, Object> m = new HashMap<>();
-            m.put("pos",    f.pos());
-            m.put("equipo", f.equipo());
-            m.put("pj",     f.pj());
-            m.put("g",      f.g());
-            m.put("e",      f.e());
-            m.put("p",      f.p());
-            m.put("gf",     f.gf());
-            m.put("gc",     f.gc());
-            m.put("dg",     f.dg());
-            m.put("pts",    f.pts());
-            m.put("racha",  f.racha());
-            rows.add(m);
-        }
-
+        List<Map<String, ?>> rows = obtenerFilasComoMap();
         Map<String, Object> params = new HashMap<>();
         params.put("LIGA_NOMBRE",   liga);
         params.put("FECHA_EMISION", fecha);
@@ -195,7 +227,7 @@ public final class ReporteClasificacionController {
                 return destinoFinal;
             },
             pdf -> {
-                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblClasificacion);
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
                 Alert ok = new Alert(Alert.AlertType.INFORMATION,
                         "PDF guardado en:\n" + pdf.getAbsolutePath(), ButtonType.OK);
                 ok.setTitle("Exportación exitosa");
@@ -204,7 +236,7 @@ public final class ReporteClasificacionController {
                 try { Desktop.getDesktop().open(pdf); } catch (Exception ignored) {}
             },
             ex -> {
-                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblClasificacion);
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblClasificacion);
                 UiUtil.error(ex);
             }
         );

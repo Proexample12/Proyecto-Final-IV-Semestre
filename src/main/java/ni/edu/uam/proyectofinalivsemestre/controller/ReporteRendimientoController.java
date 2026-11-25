@@ -42,7 +42,7 @@ public final class ReporteRendimientoController {
     @FXML private TableView<FilaRendimiento> tblRendimiento;
     @FXML private TableColumn<FilaRendimiento, Object> colPos, colEquipo, colPj, colPts,
             colEfectividad, colGolesPartido, colSolidez, colZona;
-    @FXML private Button btnExportar;
+    @FXML private Button btnExportar, btnVistaPrevia;
     @FXML private ProgressIndicator piCarga;
 
     private final StandingDao dao = new StandingDao();
@@ -78,13 +78,13 @@ public final class ReporteRendimientoController {
         if (liga == null) return;
         int compId = LIGA_IDS.get(liga);
 
-        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblRendimiento);
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
         lblMensaje.setVisible(false);
 
         UiUtil.async(
                 () -> dao.findStandingsByCompetitionOrdered(compId),
                 standings -> {
-                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblRendimiento);
+                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
                     if (standings.isEmpty()) {
                         lblMensaje.setText("No hay datos disponibles. Sincroniza la aplicación primero.");
                         lblMensaje.setVisible(true);
@@ -135,9 +135,55 @@ public final class ReporteRendimientoController {
                     tblRendimiento.getItems().setAll(filasCargadas);
                 },
                 e -> {
-                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblRendimiento);
+                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
                     UiUtil.error(e);
                 }
+        );
+    }
+
+    private List<Map<String, ?>> obtenerFilasComoMap() {
+        List<Map<String, ?>> rows = new ArrayList<>();
+        for (FilaRendimiento f : filasCargadas) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("pos",          f.pos());
+            m.put("equipo",       f.equipo());
+            m.put("pj",           f.pj());
+            m.put("pts",          f.pts());
+            m.put("efectividad",  f.efectividad());
+            m.put("golesPartido", f.golesPartido());
+            m.put("solidez",      f.solidez());
+            m.put("zona",         f.zona());
+            rows.add(m);
+        }
+        return rows;
+    }
+
+    @FXML
+    private void onVistaPrevia() {
+        if (filasCargadas.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "No hay datos para generar el reporte.", ButtonType.OK).show();
+            return;
+        }
+        String liga = cmbLiga.getValue();
+        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
+
+        List<Map<String, ?>> rows = obtenerFilasComoMap();
+        Map<String, Object> params = new HashMap<>();
+        params.put("LIGA_NOMBRE",   liga);
+        params.put("FECHA_EMISION", fecha);
+
+        UiUtil.async(
+            () -> ReportePdfService.generarJasperPrint("/reportes/rendimiento.jrxml", params, rows),
+            print -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
+                ReportePdfService.mostrarVistaPrevia(print, "Reporte de Rendimiento - " + liga);
+            },
+            ex -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
+                UiUtil.error(ex);
+            }
         );
     }
 
@@ -157,22 +203,9 @@ public final class ReporteRendimientoController {
         File destino = chooser.showSaveDialog(btnExportar.getScene().getWindow());
         if (destino == null) return;
 
-        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblRendimiento);
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
 
-        List<Map<String, ?>> rows = new ArrayList<>();
-        for (FilaRendimiento f : filasCargadas) {
-            Map<String, Object> m = new HashMap<>();
-            m.put("pos",          f.pos());
-            m.put("equipo",       f.equipo());
-            m.put("pj",           f.pj());
-            m.put("pts",          f.pts());
-            m.put("efectividad",  f.efectividad());
-            m.put("golesPartido", f.golesPartido());
-            m.put("solidez",      f.solidez());
-            m.put("zona",         f.zona());
-            rows.add(m);
-        }
-
+        List<Map<String, ?>> rows = obtenerFilasComoMap();
         Map<String, Object> params = new HashMap<>();
         params.put("LIGA_NOMBRE",   liga);
         params.put("FECHA_EMISION", fecha);
@@ -184,7 +217,7 @@ public final class ReporteRendimientoController {
                 return destinoFinal;
             },
             pdf -> {
-                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblRendimiento);
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
                 Alert ok = new Alert(Alert.AlertType.INFORMATION,
                         "PDF guardado en:\n" + pdf.getAbsolutePath(), ButtonType.OK);
                 ok.setTitle("Exportación exitosa");
@@ -193,7 +226,7 @@ public final class ReporteRendimientoController {
                 try { Desktop.getDesktop().open(pdf); } catch (Exception ignored) {}
             },
             ex -> {
-                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblRendimiento);
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblRendimiento);
                 UiUtil.error(ex);
             }
         );
