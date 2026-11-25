@@ -50,8 +50,11 @@
 
     <!-- Pie -->
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="btnExportar" text="📄 Exportar PDF" onAction="#onExportar" styleClass="btn-primario">
-            <tooltip><Tooltip text="Exportar reporte en formato PDF"/></tooltip>
+        <Button fx:id="btnVistaPrevia" text="Ver y Exportar Reporte" onAction="#onVistaPrevia" styleClass="btn-primario">
+            <tooltip><Tooltip text="Abrir vista previa interactiva para visualizar, imprimir o guardar el reporte"/></tooltip>
+        </Button>
+        <Button fx:id="btnExportar" text="📄 Guardar PDF" onAction="#onExportar" styleClass="btn-secundario">
+            <tooltip><Tooltip text="Guardar directamente el reporte en formato PDF"/></tooltip>
         </Button>
     </HBox>
 </VBox>

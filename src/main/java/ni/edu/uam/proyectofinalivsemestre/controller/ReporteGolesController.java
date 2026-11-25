@@ -45,7 +45,7 @@ public final class ReporteGolesController {
     @FXML private TableView<FilaGoles> tblGoles;
     @FXML private TableColumn<FilaGoles, Object> colJornada, colLocal, colMarcador,
             colVisitante, colTotal, colResultado;
-    @FXML private Button btnExportar;
+    @FXML private Button btnExportar, btnVistaPrevia;
     @FXML private ProgressIndicator piCarga;
 
     private final MatchDao dao = new MatchDao();
@@ -79,13 +79,13 @@ public final class ReporteGolesController {
         if (liga == null) return;
         int compId = LIGA_IDS.get(liga);
 
-        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblGoles);
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
         lblMensaje.setVisible(false);
 
         UiUtil.async(
                 () -> dao.findFinishedMatchesByCompetition(compId),
                 matches -> {
-                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblGoles);
+                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
                     if (matches.isEmpty()) {
                         lblMensaje.setText("No hay datos disponibles. Sincroniza la aplicación primero.");
                         lblMensaje.setVisible(true);
@@ -137,7 +137,7 @@ public final class ReporteGolesController {
                     tblGoles.getItems().setAll(filasCargadas);
                 },
                 e -> {
-                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblGoles);
+                    UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
                     UiUtil.error(e);
                 }
         );
@@ -148,6 +148,59 @@ public final class ReporteGolesController {
     private String descMatch(Match m) {
         return m.getHomeTeam().getName() + " " + safe(m.getHomeScore()) +
                 "-" + safe(m.getAwayScore()) + " " + m.getAwayTeam().getName();
+    }
+
+    private List<Map<String, ?>> obtenerFilasComoMap() {
+        List<Map<String, ?>> rows = new ArrayList<>();
+        for (FilaGoles f : filasCargadas) {
+            Map<String, Object> m = new HashMap<>();
+            m.put("jornada",    f.jornada());
+            m.put("local",      f.local());
+            m.put("marcador",   f.marcador());
+            m.put("visitante",  f.visitante());
+            m.put("totalGoles", f.totalGoles());
+            m.put("resultado",  f.resultado());
+            rows.add(m);
+        }
+        return rows;
+    }
+
+    private Map<String, Object> construirParametros(String liga, String fecha) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("LIGA_NOMBRE",   liga);
+        params.put("FECHA_EMISION", fecha);
+        params.put("TOTAL_GOLES",   lblTotalGoles.getText());
+        params.put("PROMEDIO",      lblPromedio.getText());
+        params.put("OVER_25",       lblOver25.getText());
+        params.put("MAX_GOLES",     lblMaxGoles.getText());
+        return params;
+    }
+
+    @FXML
+    private void onVistaPrevia() {
+        if (filasCargadas.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "No hay datos para generar el reporte.", ButtonType.OK).show();
+            return;
+        }
+        String liga = cmbLiga.getValue();
+        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
+
+        List<Map<String, ?>> rows = obtenerFilasComoMap();
+        Map<String, Object> params = construirParametros(liga, fecha);
+
+        UiUtil.async(
+            () -> ReportePdfService.generarJasperPrint("/reportes/goles.jrxml", params, rows),
+            print -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
+                ReportePdfService.mostrarVistaPrevia(print, "Reporte de Partidos y Goles - " + liga);
+            },
+            ex -> {
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
+                UiUtil.error(ex);
+            }
+        );
     }
 
     @FXML
@@ -166,28 +219,10 @@ public final class ReporteGolesController {
         File destino = chooser.showSaveDialog(btnExportar.getScene().getWindow());
         if (destino == null) return;
 
-        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, tblGoles);
+        UiUtil.ocupado(true, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
 
-        List<Map<String, ?>> rows = new ArrayList<>();
-        for (FilaGoles f : filasCargadas) {
-            Map<String, Object> m = new HashMap<>();
-            m.put("jornada",    f.jornada());
-            m.put("local",      f.local());
-            m.put("marcador",   f.marcador());
-            m.put("visitante",  f.visitante());
-            m.put("totalGoles", f.totalGoles());
-            m.put("resultado",  f.resultado());
-            rows.add(m);
-        }
-
-        // KPIs como parámetros (los valores ya están en los Labels)
-        Map<String, Object> params = new HashMap<>();
-        params.put("LIGA_NOMBRE",   liga);
-        params.put("FECHA_EMISION", fecha);
-        params.put("TOTAL_GOLES",   lblTotalGoles.getText());
-        params.put("PROMEDIO",      lblPromedio.getText());
-        params.put("OVER_25",       lblOver25.getText());
-        params.put("MAX_GOLES",     lblMaxGoles.getText());
+        List<Map<String, ?>> rows = obtenerFilasComoMap();
+        Map<String, Object> params = construirParametros(liga, fecha);
 
         File destinoFinal = destino;
         UiUtil.async(
@@ -196,7 +231,7 @@ public final class ReporteGolesController {
                 return destinoFinal;
             },
             pdf -> {
-                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblGoles);
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
                 Alert ok = new Alert(Alert.AlertType.INFORMATION,
                         "PDF guardado en:\n" + pdf.getAbsolutePath(), ButtonType.OK);
                 ok.setTitle("Exportación exitosa");
@@ -205,7 +240,7 @@ public final class ReporteGolesController {
                 try { Desktop.getDesktop().open(pdf); } catch (Exception ignored) {}
             },
             ex -> {
-                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, tblGoles);
+                UiUtil.ocupado(false, piCarga, cmbLiga, btnExportar, btnVistaPrevia, tblGoles);
                 UiUtil.error(ex);
             }
         );
