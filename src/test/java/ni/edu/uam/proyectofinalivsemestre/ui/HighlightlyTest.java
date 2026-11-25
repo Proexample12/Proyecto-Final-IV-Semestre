@@ -11,6 +11,21 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HighlightlyTest {
+    @Test void reconocePsvSinConfundirOtrosEquipos() {
+        var principal = JsonParser.parseString("""
+                {"competition":{"code":"CL"},"utcDate":"2026-11-24T20:00:00Z",
+                 "homeTeam":{"name":"Real Madrid CF"},"awayTeam":{"name":"PSV"}}
+                """).getAsJsonObject();
+        var match = JsonParser.parseString("""
+                {"league":{"name":"UEFA Champions League"},"date":"2026-11-24T20:00:00.000Z",
+                 "homeTeam":{"name":"Real Madrid"},"awayTeam":{"name":"PSV Eindhoven"}}
+                """).getAsJsonObject();
+        assertTrue(HighlightlyService.coincide(principal, match));
+        match.getAsJsonObject("awayTeam").addProperty("name", "FC Eindhoven");
+        assertFalse(HighlightlyService.coincide(principal, match));
+        match.getAsJsonObject("awayTeam").addProperty("name", "Jong PSV");
+        assertFalse(HighlightlyService.coincide(principal, match));
+    }
     static JsonObject fixture(String nombre) throws IOException {
         try(var in=HighlightlyTest.class.getResourceAsStream("/highlightly/"+nombre+".json")) {
             return JsonParser.parseString(new String(Objects.requireNonNull(in).readAllBytes(),java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();

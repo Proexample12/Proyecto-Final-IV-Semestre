@@ -9,21 +9,6 @@
               columnWidth="802" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20">
 
-  <parameter name="LIGA_NOMBRE" class="java.lang.String"/>
-  <parameter name="FECHA_EMISION" class="java.lang.String"/>
-
-  <field name="pos"    class="java.lang.Integer"/>
-  <field name="equipo" class="java.lang.String"/>
-  <field name="pj"     class="java.lang.Integer"/>
-  <field name="g"      class="java.lang.Integer"/>
-  <field name="e"      class="java.lang.Integer"/>
-  <field name="p"      class="java.lang.Integer"/>
-  <field name="gf"     class="java.lang.Integer"/>
-  <field name="gc"     class="java.lang.Integer"/>
-  <field name="dg"     class="java.lang.Integer"/>
-  <field name="pts"    class="java.lang.Integer"/>
-  <field name="racha"  class="java.lang.String"/>
-
   <style name="titulo"
          fontName="SansSerif" fontSize="16" isBold="true"
          forecolor="#FFFFFF" backcolor="#17775A"
@@ -74,6 +59,21 @@
          fontName="SansSerif" fontSize="8"
          forecolor="#4A5B55" hTextAlign="Left" vTextAlign="Middle"/>
 
+  <parameter name="LIGA_NOMBRE" class="java.lang.String"/>
+  <parameter name="FECHA_EMISION" class="java.lang.String"/>
+
+  <field name="pos"    class="java.lang.Integer"/>
+  <field name="equipo" class="java.lang.String"/>
+  <field name="pj"     class="java.lang.Integer"/>
+  <field name="g"      class="java.lang.Integer"/>
+  <field name="e"      class="java.lang.Integer"/>
+  <field name="p"      class="java.lang.Integer"/>
+  <field name="gf"     class="java.lang.Integer"/>
+  <field name="gc"     class="java.lang.Integer"/>
+  <field name="dg"     class="java.lang.Integer"/>
+  <field name="pts"    class="java.lang.Integer"/>
+  <field name="racha"  class="java.lang.String"/>
+
   <title>
     <band height="44" splitType="Stretch">
       <rectangle>
@@ -86,6 +86,7 @@
       </rectangle>
       <textField>
         <reportElement style="titulo" x="12" y="0" width="580" height="44" forecolor="#FFFFFF" backcolor="#17775A"/>
+        <box leftPadding="5"/>
         <textElement textAlignment="Left" verticalAlignment="Middle">
           <font fontName="SansSerif" size="16" isBold="true"/>
         </textElement>
@@ -112,7 +113,6 @@
         <textElement textAlignment="Left">
           <font fontName="SansSerif" size="9" isBold="true"/>
         </textElement>
-        <box leftPadding="5"/>
         <text><![CDATA[Equipo]]></text>
       </staticText>
       <staticText>

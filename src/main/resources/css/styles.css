@@ -103,3 +103,192 @@
 .jugador-insignia, .jugador-insignia .label { -fx-text-fill: white; -fx-font-size: 12px; }
 .cambio-sale { -fx-text-fill: #ff998f; }
 .cambio-entra { -fx-text-fill: #9df3bc; }
+
+/* ==========================================================================
+   ESTILOS MEJORADOS PARA PANTALLAS DE REPORTE (Clasificación, Goles, Rendimiento)
+   ========================================================================== */
+
+/* ── Navegación superior entre reportes ─────────────────────────────────── */
+.pestanas-reportes {
+    -fx-background-color: #E2EAE5;
+    -fx-background-radius: 99;
+    -fx-padding: 3;
+}
+.tab-reporte {
+    -fx-min-height: 34px;
+    -fx-padding: 4 16;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 99;
+    -fx-border-radius: 99;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #3E534B;
+    -fx-cursor: hand;
+}
+.tab-reporte:hover {
+    -fx-background-color: #D2E0D8;
+    -fx-text-fill: #14221E;
+}
+.tab-reporte:selected {
+    -fx-background-color: #17775A;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* ── Panel de Tarjetas de Métricas (KPIs) ───────────────────────────────── */
+.tarjeta-kpi {
+    -fx-background-color: white;
+    -fx-border-color: #DCE5E0;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 10 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 6, 0, 0, 2);
+}
+.tarjeta-kpi:hover {
+    -fx-border-color: #B8CBC2;
+}
+.kpi-titulo {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #5A7067;
+}
+.kpi-valor {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #17775A;
+}
+.kpi-subtexto {
+    -fx-font-size: 11px;
+    -fx-text-fill: #768881;
+}
+
+.badge-record {
+    -fx-background-color: #EDF4F0;
+    -fx-border-color: #D8E5DF;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12;
+    -fx-font-size: 12px;
+    -fx-text-fill: #1D332B;
+}
+
+/* ── Gráfica de Barras JavaFX (BarChart) ─────────────────────────────────── */
+.panel-grafica {
+    -fx-background-color: white;
+    -fx-border-color: #DCE5E0;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 10 14 6 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 6, 0, 0, 2);
+}
+.titulo-grafica {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #14221E;
+}
+.chart {
+    -fx-padding: 0;
+}
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+    -fx-stroke: #EAEFEA;
+    -fx-stroke-dash-array: 2 4;
+}
+.axis {
+    -fx-tick-label-font-size: 11px;
+    -fx-tick-label-fill: #566962;
+}
+.axis-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2B453B;
+}
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 2 0 4 0;
+}
+.chart-legend-item {
+    -fx-font-size: 11px;
+    -fx-text-fill: #4A5B55;
+}
+/* Serie 0: Goles Totales / Goles Local (Verde del proyecto) */
+.default-color0.chart-bar {
+    -fx-bar-fill: #17775A;
+    -fx-background-radius: 4 4 0 0;
+    -fx-background-insets: 0;
+}
+.default-color0.chart-bar:hover {
+    -fx-bar-fill: #0F5A43;
+    -fx-cursor: hand;
+}
+/* Serie 1: Goles Visitante (Azul deportivo) */
+.default-color1.chart-bar {
+    -fx-bar-fill: #2F6FDB;
+    -fx-background-radius: 4 4 0 0;
+    -fx-background-insets: 0;
+}
+.default-color1.chart-bar:hover {
+    -fx-bar-fill: #1C51AB;
+    -fx-cursor: hand;
+}
+
+/* ── Badges y Píldoras en Tablas de Reportes ────────────────────────────── */
+.badge-resultado {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 10;
+    -fx-background-radius: 99;
+    -fx-alignment: CENTER;
+}
+.resultado-local {
+    -fx-background-color: #E2EFE7;
+    -fx-text-fill: #0E5C43;
+}
+.resultado-visitante {
+    -fx-background-color: #E7EEFA;
+    -fx-text-fill: #1A52B5;
+}
+.resultado-empate {
+    -fx-background-color: #ECEFEF;
+    -fx-text-fill: #576560;
+}
+
+.badge-racha {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-min-width: 22px;
+    -fx-min-height: 22px;
+    -fx-padding: 2 6;
+    -fx-background-radius: 4;
+    -fx-alignment: CENTER;
+}
+.racha-victoria { -fx-background-color: #D3F1DF; -fx-text-fill: #14613B; }
+.racha-empate   { -fx-background-color: #F8EED1; -fx-text-fill: #7D5B00; }
+.racha-derrota  { -fx-background-color: #FDE2DF; -fx-text-fill: #9C1F16; }
+
+.badge-zona {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 9;
+    -fx-background-radius: 99;
+    -fx-alignment: CENTER;
+}
+.zona-champions-pill { -fx-background-color: #E5EEFB; -fx-text-fill: #1952BA; }
+.zona-europa-pill    { -fx-background-color: #FEEFDE; -fx-text-fill: #9E5B00; }
+.zona-mitad-pill     { -fx-background-color: #EFF2F0; -fx-text-fill: #4F605A; }
+.zona-descenso-pill  { -fx-background-color: #FDE8E6; -fx-text-fill: #A82515; }
+
+.badge-solidez {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 9;
+    -fx-background-radius: 99;
+    -fx-alignment: CENTER;
+}
+.badge-solidez-alta  { -fx-background-color: #E2EFE7; -fx-text-fill: #0E5C43; }
+.badge-solidez-media { -fx-background-color: #FDF3DF; -fx-text-fill: #855F02; }
+.badge-solidez-baja  { -fx-background-color: #FDE7E5; -fx-text-fill: #A62115; }
+
