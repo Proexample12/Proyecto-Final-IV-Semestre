@@ -37,7 +37,13 @@ public final class AlineacionWindow {
         FlowPane leyenda=new FlowPane(18,8); leyenda.setPadding(new Insets(12,24,16,24));
         leyenda.getChildren().addAll(leyenda("⚽","Gol"),leyendaBota(),leyendaTarjeta("#f4c542","Amarilla"),leyendaTarjeta("#ef5350","Roja"),
                 leyenda("↘","Sale"),leyenda("↗","Entra"),leyenda("|C|","Capitán"),leyenda("—","Sin puntuación"));
-        root.setBottom(leyenda);
+        Label tituloLeyenda=new Label("LEYENDA DE LAS FORMACIONES");
+        tituloLeyenda.getStyleClass().add("alineacion-formacion");
+        VBox bloqueLeyenda=new VBox(6,tituloLeyenda,leyenda);
+        bloqueLeyenda.setPadding(new Insets(12,24,16,24));
+        leyenda.setPadding(Insets.EMPTY);
+        VBox contenido=new VBox(12,equipos,bloqueLeyenda);
+        scroll.setContent(contenido);
         Scene scene=new Scene(root,1320,880); scene.getStylesheets().add(Objects.requireNonNull(AlineacionWindow.class.getResource("/css/styles.css")).toExternalForm());
         scene.setOnKeyPressed(e->{if(e.getCode()==javafx.scene.input.KeyCode.ESCAPE) stage.close();});
         stage.setScene(scene); stage.setMinWidth(980); stage.setMinHeight(640); return stage;

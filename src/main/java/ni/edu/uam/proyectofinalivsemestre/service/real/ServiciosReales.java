@@ -170,6 +170,31 @@ public final class ServiciosReales implements PartidoService, PosicionService, F
         catch (Exception e) { avisos.add(e.getMessage()); }
         if (!avisos.isEmpty()) throw new java.io.IOException(String.join("\n",avisos));
     }
+    private static void cargarIdentidades(JsonObject principal) {
+        leer(em -> {
+            for (String lado : List.of("homeTeam", "awayTeam")) {
+                JsonObject equipo = objeto(principal, lado);
+                Integer id = numero(equipo, "id");
+                if (id == null) continue;
+                ApiSnapshot identidad = em.find(ApiSnapshot.class, "identity/highlightly/" + id);
+                if (identidad != null) equipo.add("highlightlyId", respuesta(identidad.getPayload()).get("id"));
+            }
+            return null;
+        });
+    }
+    private static void guardarIdentidades(EntityManager em, JsonObject principal, JsonObject match) {
+        for (String lado : List.of("homeTeam", "awayTeam")) {
+            Integer origen = numero(objeto(principal, lado), "id");
+            Integer destino = numero(objeto(match, lado), "id");
+            if (origen == null || destino == null) continue;
+            String clave = "identity/highlightly/" + origen;
+            ApiSnapshot anterior = em.find(ApiSnapshot.class, clave);
+            if (anterior != null && !Objects.equals(numero(respuesta(anterior.getPayload()), "id"), destino))
+                throw new IllegalStateException("Correspondencia de equipo contradictoria.");
+            JsonObject identidad = new JsonObject(); identidad.addProperty("id", destino);
+            snapshot(em, clave, identidad);
+        }
+    }
     private void actualizarHighlightly(Long id) throws Exception {
         String clave = "highlightly/" + id;
         JsonObject anterior = leer(em -> {
@@ -187,6 +212,7 @@ public final class ServiciosReales implements PartidoService, PosicionService, F
             if (s == null) throw new IllegalStateException("Actualiza la lista de partidos antes de abrir el detalle.");
             return respuesta(s.getPayload());
         });
+        cargarIdentidades(principal);
         JsonObject conocido = objeto(anterior,"match");
         // La fecha o los equipos pueden cambiar tras un aplazamiento: revalidar la asociación.
         JsonObject candidato = ni.edu.uam.proyectofinalivsemestre.service.highlightly.HighlightlyService.coincide(principal,conocido)
@@ -213,7 +239,7 @@ public final class ServiciosReales implements PartidoService, PosicionService, F
             aviso = (aviso == null ? "" : aviso + "\n") + "Puntuaciones sin actualizar: " + e.getMessage();
             nuevo.addProperty("warning",aviso);
         }
-        escribir(em -> { snapshot(em,clave,nuevo); return null; });
+        escribir(em -> { snapshot(em,clave,nuevo); guardarIdentidades(em, principal, match); return null; });
         if (aviso != null) throw new java.io.IOException(aviso);
     }
     /** Nunca cruza los IDs de proveedores: verifica fecha, liga y ambos equipos. */
@@ -321,6 +347,7 @@ public final class ServiciosReales implements PartidoService, PosicionService, F
             ApiSnapshot h = em.find(ApiSnapshot.class,"highlightly/" + id);
             if (h == null) return base;
             JsonObject guardado = respuesta(h.getPayload());
+            cargarIdentidades(json);
             if (!ni.edu.uam.proyectofinalivsemestre.service.highlightly.HighlightlyService.coincide(json,objeto(guardado,"match"))) return base;
             return ni.edu.uam.proyectofinalivsemestre.service.highlightly.HighlightlyMapper.combinar(base,guardado,h.getUpdatedAt());
         });
