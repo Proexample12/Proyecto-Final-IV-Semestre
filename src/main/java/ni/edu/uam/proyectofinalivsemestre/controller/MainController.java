@@ -46,7 +46,7 @@ public final class MainController {
     }
     @FXML private void irAPosiciones() { abrir("posiciones", btnPosiciones); }
     @FXML private void irAFavoritos() { abrir("favoritos", btnFavoritos); }
-    @FXML private void irAReportes() { abrir("reporte_clasificacion", btnReportes); }
+    @FXML private void irAReportes() { abrir("reportes", btnReportes); }
     public void abrirDetalle(Long id) {
         FavoritosController c = abrir("favoritos", btnFavoritos);
         if (c != null) c.abrirPartido(id);
