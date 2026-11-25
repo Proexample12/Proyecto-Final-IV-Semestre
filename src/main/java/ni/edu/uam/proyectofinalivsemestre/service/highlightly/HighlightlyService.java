@@ -116,15 +116,16 @@ public class HighlightlyService {
     }
     private static String normalizar(String valor) {
         return java.text.Normalizer.normalize(valor,java.text.Normalizer.Form.NFD).replaceAll("\\p{M}","")
-                .toLowerCase(Locale.ROOT).replaceAll("\\b(fc|cf|afc)\\b","").replaceAll("[^a-z0-9]","");
+                .toLowerCase(Locale.ROOT).replaceAll("\\b(fc|cf|afc|ac|sc|fk|sk|bk)\\b","").replaceAll("[^a-z0-9]","");
     }
-    private static String nombre(String valor) {
+    public static String nombre(String valor) {
         String n = normalizar(valor);
         return switch(n) {
             case "realracingclubdesantander", "racingsantander", "santander" -> "racingsantander";
             case "clubatleticodemadrid", "atleticomadrid", "atleticodemadrid", "atleti" -> "atleticomadrid";
             case "athleticclub", "athleticclubdebilbao", "athleticbilbao", "athletic" -> "athleticclub";
             case "barca", "barcelona" -> "barcelona";
+            case "sabah", "sabahfa" -> "sabah";
             case "psv", "psveindhoven" -> "psveindhoven";
             default -> n;
         };

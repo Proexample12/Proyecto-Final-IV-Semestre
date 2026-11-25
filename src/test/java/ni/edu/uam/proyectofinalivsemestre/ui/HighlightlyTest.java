@@ -11,6 +11,15 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HighlightlyTest {
+    @Test void normalizaSiglasSinCambiosPorPartido() {
+        assertEquals(HighlightlyService.nombre("Sabah FK"), HighlightlyService.nombre("Sabah"));
+        assertEquals(HighlightlyService.nombre("Sabah FK"), HighlightlyService.nombre("Sabah FA"));
+        assertEquals(HighlightlyService.nombre("FC Barcelona"), HighlightlyService.nombre("Barcelona"));
+        assertEquals(HighlightlyService.nombre("AC Milan"), HighlightlyService.nombre("Milan"));
+        assertNotEquals(HighlightlyService.nombre("Manchester City"), HighlightlyService.nombre("Manchester United"));
+        assertNotEquals(HighlightlyService.nombre("Barcelona B"), HighlightlyService.nombre("Barcelona"));
+        assertNotEquals(HighlightlyService.nombre("Sabah U21"), HighlightlyService.nombre("Sabah"));
+    }
     @Test void reconocePsvSinConfundirOtrosEquipos() {
         var principal = JsonParser.parseString("""
                 {"competition":{"code":"CL"},"utcDate":"2026-11-24T20:00:00Z",
