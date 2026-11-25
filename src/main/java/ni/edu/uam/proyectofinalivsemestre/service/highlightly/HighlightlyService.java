@@ -125,6 +125,7 @@ public class HighlightlyService {
             case "clubatleticodemadrid", "atleticomadrid", "atleticodemadrid", "atleti" -> "atleticomadrid";
             case "athleticclub", "athleticclubdebilbao", "athleticbilbao", "athletic" -> "athleticclub";
             case "barca", "barcelona" -> "barcelona";
+            case "psv", "psveindhoven" -> "psveindhoven";
             default -> n;
         };
     }

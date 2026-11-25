@@ -67,5 +67,18 @@ public final class UiUtil {
     public static String liga(String nombre) {
         return switch (nombre) { case "Champions League" -> "Champions"; case "Premier League" -> "Premier"; default -> nombre; };
     }
+    public static void cambiarVista(Node origen, String fxmlName) {
+        try {
+            if (origen == null || origen.getScene() == null) return;
+            Node contenidoNode = origen.getScene().lookup("#contenido");
+            if (contenidoNode instanceof javafx.scene.layout.Pane pane) {
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(UiUtil.class.getResource("/views/" + fxmlName + ".fxml"));
+                javafx.scene.Parent root = loader.load();
+                pane.getChildren().setAll(root);
+            }
+        } catch (Exception e) {
+            error(e);
+        }
+    }
     public static void cerrar() { EXECUTOR.shutdownNow(); }
 }

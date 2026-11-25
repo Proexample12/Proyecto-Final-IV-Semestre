@@ -9,20 +9,6 @@
               columnWidth="802" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20">
 
-  <parameter name="LIGA_NOMBRE"    class="java.lang.String"/>
-  <parameter name="FECHA_EMISION"  class="java.lang.String"/>
-  <parameter name="TOTAL_GOLES"    class="java.lang.String"/>
-  <parameter name="PROMEDIO"       class="java.lang.String"/>
-  <parameter name="OVER_25"        class="java.lang.String"/>
-  <parameter name="MAX_GOLES"      class="java.lang.String"/>
-
-  <field name="jornada"    class="java.lang.Integer"/>
-  <field name="local"      class="java.lang.String"/>
-  <field name="marcador"   class="java.lang.String"/>
-  <field name="visitante"  class="java.lang.String"/>
-  <field name="totalGoles" class="java.lang.Integer"/>
-  <field name="resultado"  class="java.lang.String"/>
-
   <style name="titulo" fontName="SansSerif" fontSize="16" isBold="true"
          forecolor="#FFFFFF" mode="Opaque" hTextAlign="Left" vTextAlign="Middle"/>
 
@@ -47,6 +33,20 @@
 
   <style name="footer" fontName="SansSerif" fontSize="8" forecolor="#4A5B55" vTextAlign="Middle"/>
 
+  <parameter name="LIGA_NOMBRE"    class="java.lang.String"/>
+  <parameter name="FECHA_EMISION"  class="java.lang.String"/>
+  <parameter name="TOTAL_GOLES"    class="java.lang.String"/>
+  <parameter name="PROMEDIO"       class="java.lang.String"/>
+  <parameter name="OVER_25"        class="java.lang.String"/>
+  <parameter name="MAX_GOLES"      class="java.lang.String"/>
+
+  <field name="jornada"    class="java.lang.Integer"/>
+  <field name="local"      class="java.lang.String"/>
+  <field name="marcador"   class="java.lang.String"/>
+  <field name="visitante"  class="java.lang.String"/>
+  <field name="totalGoles" class="java.lang.Integer"/>
+  <field name="resultado"  class="java.lang.String"/>
+
   <title>
     <band height="65">
       <rectangle>
@@ -61,6 +61,7 @@
       </textField>
       <textField>
         <reportElement x="600" y="11" width="190" height="20" forecolor="#E0F2E9"/>
+        <box leftPadding="5"/>
         <textElement textAlignment="Right" verticalAlignment="Middle">
           <font fontName="SansSerif" size="9"/>
         </textElement>
@@ -106,7 +107,6 @@
       <staticText>
         <reportElement style="encabezado" x="60" y="0" width="220" height="22"/>
         <textElement textAlignment="Left"><font fontName="SansSerif" size="9" isBold="true"/></textElement>
-        <box leftPadding="5"/>
         <text><![CDATA[Equipo Local]]></text>
       </staticText>
       <staticText>
@@ -115,8 +115,8 @@
       </staticText>
       <staticText>
         <reportElement style="encabezado" x="360" y="0" width="220" height="22"/>
-        <textElement textAlignment="Left"><font fontName="SansSerif" size="9" isBold="true"/></textElement>
         <box leftPadding="5"/>
+        <textElement textAlignment="Left"><font fontName="SansSerif" size="9" isBold="true"/></textElement>
         <text><![CDATA[Equipo Visitante]]></text>
       </staticText>
       <staticText>
